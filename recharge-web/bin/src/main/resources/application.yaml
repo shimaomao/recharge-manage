@@ -1,0 +1,50 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /recharge
+debug: true
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/vote?useUnicode=true&characterEncoding=utf8&useSSL=true&verifyServerCertificate=false
+    username: root
+    password: Mysql1234!@#
+    driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: redismima1234
+    pool:
+      max-active: 100
+      max-wait: -1
+      max-idle: 20
+      min-idle: 10
+    timeout: 2000
+  data:
+    elasticsearch:
+      cluster-name: docker-cluster
+      cluster-nodes: 172.16.24.190:9300
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.dliberty.recharge.entity
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 86400
+  tokenHead: Bearer
+BASE_PATH: /export/static/file
+oss:
+  endpoint: https://oss-cn-hangzhou.aliyuncs.com
+  accessKeyId: LTAIySeB65IvOWKo
+  accessKeySecret: GKQuDSKcJEYdSbkgADq9BVX3AyABff
+  bucketName: mtbox
+  policy:
+    expire: 300 # 签名有效期(S)
+  maxSize: 10 # 上传文件大小(M)
+  callback: http://39.98.190.128:8080/aliyun/oss/callback # 文件上传成功后的回调地址
+  dir:
+    prefix: vote/images/ # 上传文件夹路径前缀
+app:
+  weixin:
+    appid: wxe67b6b7e7b50c7e1
+    secret: 6e719debbc7f625339ba5f8d66f13ae4

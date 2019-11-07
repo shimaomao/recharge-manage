@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dliberty.recharge.dao.mapper.PmsVoteMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.dliberty.recharge.entity.PmsVote">
+		<id column="id" property="id" />
+		<result column="vote_title" property="voteTitle" />
+		<result column="vote_banner" property="voteBanner" />
+		<result column="vote_introduce" property="voteIntroduce" />
+		<result column="signup_begin_time" property="signupBeginTime" />
+		<result column="signup_end_time" property="signupEndTime" />
+		<result column="vote_begin_time" property="voteBeginTime" />
+		<result column="vote_end_time" property="voteEndTime" />
+		<result column="is_open_signup" property="isOpenSignup" />
+		<result column="everyday_vote_num" property="everydayVoteNum" />
+		<result column="is_repeat_vote" property="isRepeatVote" />
+		<result column="is_show" property="isShow" />
+		<result column="share_img" property="shareImg" />
+		<result column="vote_status" property="voteStatus" />
+		<result column="reject_reason" property="rejectReason" />
+		<result column="audit_time" property="auditTime" />
+		<result column="sponsor" property="sponsor" />
+		<result column="sponsor_phone" property="sponsorPhone" />
+		<result column="browse" property="browse" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="is_deleted" property="isDeleted" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id, vote_title, vote_banner, vote_introduce, signup_begin_time, signup_end_time,vote_begin_time,vote_end_time,
+		is_open_signup, everyday_vote_num, is_repeat_vote, is_show, share_img,
+		vote_status, reject_reason,audit_time, sponsor, sponsor_phone, browse,
+		create_time, update_time, is_deleted
+	</sql>
+
+	<select id="listPage" resultType="com.dliberty.recharge.dto.PmsVoteDto">
+		select
+		<include refid="Base_Column_List" />
+		from pms_vote
+		where is_deleted = 0
+		<if test="vo.keyword != null and vo.keyword != ''">
+			and vote_title like CONCAT('%',#{vo.keyword},'%')
+		</if>
+		<if test="vo.voteStatus != null">
+			and vote_status = #{vo.voteStatus}
+		</if>
+		order by id desc
+	</select>
+
+</mapper>

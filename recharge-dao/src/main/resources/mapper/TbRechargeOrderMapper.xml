@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dliberty.recharge.dao.mapper.TbRechargeOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.dliberty.recharge.entity.TbRechargeOrder">
+        <id column="id" property="id" />
+        <result column="order_no" property="orderNo" />
+        <result column="order_money" property="orderMoney" />
+        <result column="order_status" property="orderStatus" />
+        <result column="recharge_card_id" property="rechargeCardId" />
+        <result column="recharge_mobile" property="rechargeMobile" />
+        <result column="three_order_no" property="threeOrderNo" />
+        <result column="three_order_money" property="threeOrderMoney" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_deleted" property="isDeleted" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no, order_money, order_status, recharge_card_id, recharge_mobile, three_order_no, three_order_money, create_time, update_time, is_deleted
+    </sql>
+
+</mapper>

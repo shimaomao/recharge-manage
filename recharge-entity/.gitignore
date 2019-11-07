@@ -1,0 +1,7 @@
+/target/
+/.settings/
+/.apt_generated/
+/.*/
+.classpath
+.project
+*.iml

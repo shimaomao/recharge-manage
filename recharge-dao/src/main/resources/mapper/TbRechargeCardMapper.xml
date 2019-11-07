@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dliberty.recharge.dao.mapper.TbRechargeCardMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.dliberty.recharge.entity.TbRechargeCard">
+        <id column="id" property="id" />
+        <result column="card_no" property="cardNo" />
+        <result column="secret_key" property="secretKey" />
+        <result column="money" property="money" />
+        <result column="is_use" property="isUse" />
+        <result column="use_mobile" property="useMobile" />
+        <result column="use_time" property="useTime" />
+        <result column="qr_code_path" property="qrCodePath" />
+        <result column="is_deleted" property="isDeleted" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, card_no, secret_key, money, is_use, use_mobile, use_time, qr_code_path, is_deleted, create_user_id, create_time, update_time
+    </sql>
+
+</mapper>

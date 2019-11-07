@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dliberty.recharge.dao.mapper.TbApiRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.dliberty.recharge.entity.TbApiRecord">
+        <id column="id" property="id" />
+        <result column="api_type" property="apiType" />
+        <result column="in_param" property="inParam" />
+        <result column="request_time" property="requestTime" />
+        <result column="is_success" property="isSuccess" />
+        <result column="out_result" property="outResult" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, api_type, in_param, request_time, is_success, out_result, create_time, update_time
+    </sql>
+
+</mapper>
