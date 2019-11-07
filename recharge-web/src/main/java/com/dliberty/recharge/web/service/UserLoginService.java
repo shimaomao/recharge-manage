@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.dliberty.recharge.api.service.UsersService;
 import com.dliberty.recharge.common.exception.CommonException;
 import com.dliberty.recharge.common.lang.data.StringUtils;
+import com.dliberty.recharge.common.utils.WebUtil;
 import com.dliberty.recharge.entity.Users;
 import com.dliberty.recharge.web.util.JwtTokenUtil;
 
@@ -65,7 +66,7 @@ public class UserLoginService {
 			Authentication authentication = authenticationManager.authenticate(authenticationToken);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
-			token = jwtTokenUtil.generateToken(userDetails, null);
+			token = jwtTokenUtil.generateToken(userDetails, WebUtil.getIpAddr(null));
 		} catch (AuthenticationException e) {
 			logger.warn("登录异常:{}", e.getMessage());
 		}

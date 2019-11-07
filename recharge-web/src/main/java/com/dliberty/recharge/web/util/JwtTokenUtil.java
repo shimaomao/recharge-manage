@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.dliberty.recharge.common.lang.data.StringUtils;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -82,6 +84,20 @@ public class JwtTokenUtil {
         }
         return username;
     }
+    
+    /**
+     * 从token中获取信息
+     */
+    public  String getObject(String token,String key) {
+        String value;
+        try {
+            Claims claims = getClaimsFromToken(token);
+            value = (String)claims.get(key);
+        } catch (Exception e) {
+            value = null;
+        }
+        return value;
+    }
 
     /**
      * 验证token是否还有效
@@ -112,11 +128,17 @@ public class JwtTokenUtil {
 
     /**
      * 根据用户信息生成token
+     * @param userDetails
+     * @param salt 可以是IP，浏览器信息等
+     * @return
      */
-    public String generateToken(UserDetails userDetails,String openId) {
+	public String generateToken(UserDetails userDetails,String salt) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
         claims.put(CLAIM_KEY_CREATED, new Date());
+        if (StringUtils.isNoneEmpty(salt)) {
+        	claims.put("salt", salt);
+        }
         return generateToken(claims);
     }
 
