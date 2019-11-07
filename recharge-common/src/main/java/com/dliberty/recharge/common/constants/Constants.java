@@ -73,6 +73,56 @@ public class Constants {
 			return desc;
 		}
 	}
+
+	public enum DeletedFlag {
+		DELETED_YES	(1, "已删除"),
+		DELETED_NO(0, "未删除");
+
+		private int code;
+		private String desc;
+
+		DeletedFlag(int code, String desc) {
+			this.code = code;
+			this.desc = desc;
+		}
+
+		public int getCode() {
+			return code;
+		}
+
+		public void setCode(int code) {
+			this.code = code;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+	}
+
+	public enum UseFlag {
+		USED_YES	(1, "已使用"),
+		USED_NO(0, "未使用");
+
+		private int code;
+		private String desc;
+
+		UseFlag(int code, String desc) {
+			this.code = code;
+			this.desc = desc;
+		}
+
+		public int getCode() {
+			return code;
+		}
+
+		public void setCode(int code) {
+			this.code = code;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+	}
 	
 	
 	

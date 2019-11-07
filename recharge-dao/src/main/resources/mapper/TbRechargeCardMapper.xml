@@ -23,4 +23,33 @@
         id, card_no, secret_key, money, is_use, use_mobile, use_time, qr_code_path, is_deleted, create_user_id, create_time, update_time
     </sql>
 
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO tb_recharge_card (card_no, secret_key, money, is_use, use_mobile, use_time, qr_code_path, is_deleted, create_user_id, create_time, update_time)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.cardNo},#{item.secretKey},#{item.money},#{item.isUse},#{item.useMobile},#{item.useTime},#{item.qrCodePath},#{item.isDeleted},#{item.createUserId},#{item.createTime},#{item.updateTime})
+        </foreach>
+    </insert>
+
+    <select id="listPage" resultType="com.dliberty.recharge.dto.RechargeCardDto">
+        select
+            <include refid="Base_Column_List" />
+        from tb_recharge_card where is_deleted = 0
+        <if test="vo.keyword != null and vo.keyword != ''">
+            and (card_no like CONCAT('%',#{vo.keyword},'%') or use_mobile like CONCAT('%',#{vo.keyword},'%') )
+        </if>
+        <if test="vo.useFlag != null">
+            and is_use = #{vo.useFlag}
+        </if>
+
+        <if test="vo.startDate != null">
+            and create_time &gt;= #{vo.startDate}
+        </if>
+
+        <if test="vo.endDate != null">
+            and create_time &lt;= #{vo.endDate}
+        </if>
+        order by id desc
+    </select>
+
 </mapper>
