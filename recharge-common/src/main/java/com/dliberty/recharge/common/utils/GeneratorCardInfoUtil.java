@@ -53,7 +53,7 @@ public class GeneratorCardInfoUtil {
 
         Integer recharge_card_no_suffix = (Integer) generatorCardInfoUtil.redisClient.get(REDIS_KEY);
         if(recharge_card_no_suffix == null || recharge_card_no_suffix.intValue() >= 9999){
-            generatorCardInfoUtil.redisClient.set(REDIS_KEY , 1);
+            generatorCardInfoUtil.redisClient.set(REDIS_KEY , 0);
         }
         String str = getNumberStr(generatorCardInfoUtil.redisClient.incr(REDIS_KEY , 1));
         sb.append(str);
