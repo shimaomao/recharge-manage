@@ -30,9 +30,6 @@ import java.util.List;
  */
 @Service
 public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper, TbRechargeCard> implements ITbRechargeCardService {
-    private String redis_key = "recharge_card_no_suffix";
-    @Autowired
-    private RedisClient redisClient;
 
     @Override
     public Boolean batchCreateCard(CreateCardVo cardVo) {
@@ -41,9 +38,8 @@ public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper,
             cardVo.getCardList().forEach(create -> {
                 for(int i = 1 ; i <= create.getNumber() ; i++){
                     TbRechargeCard card = new TbRechargeCard();
-                    //TODO
-                    card.setCardNo("");
-                    card.setSecretKey("");
+                    card.setCardNo(GeneratorCardInfoUtil.getCardNo(card.getMoney()/100));
+                    card.setSecretKey(GeneratorCardInfoUtil.getCardNo(card.getMoney()/100));
                     card.setCreateTime(new Date());
                     card.setIsDeleted(Constants.DeletedFlag.DELETED_NO.getCode());
                     card.setIsUse(Constants.UseFlag.USED_NO.getCode());
