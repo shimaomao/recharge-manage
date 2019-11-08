@@ -40,9 +40,17 @@ public class WebUtil {
 	}
 	
 	public static String getUserName() {
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
-		String userName = userDetails.getUsername();
-		return userName;
+		try {
+			UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
+			if (userDetails == null) {
+				return null;
+			}
+			String userName = userDetails.getUsername();
+			return userName;
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 
 }

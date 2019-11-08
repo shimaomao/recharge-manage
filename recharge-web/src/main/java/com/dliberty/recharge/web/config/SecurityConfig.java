@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.disable().sessionManagement()// 基于token，所以不需要session
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/**", "/webjars/**", "/hello/home",
-						"/user/login", "/admin/**", "/favicon.ico","/recharge/**")
+						"/user/login", "/admin/**", "/favicon.ico")
 				.permitAll().anyRequest()// 除上面外的所有请求全部需要鉴权认证
 				.authenticated();
 		// 禁用缓存
