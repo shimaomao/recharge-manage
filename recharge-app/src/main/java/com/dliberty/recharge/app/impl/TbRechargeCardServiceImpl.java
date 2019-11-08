@@ -1,24 +1,23 @@
 package com.dliberty.recharge.app.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dliberty.recharge.common.constants.Constants;
-import com.dliberty.recharge.common.exception.CommonException;
-import com.dliberty.recharge.common.redis.RedisClient;
-import com.dliberty.recharge.common.utils.EntityUtil;
-import com.dliberty.recharge.dto.RechargeCardDto;
-import com.dliberty.recharge.vo.CreateCardVo;
-import com.dliberty.recharge.vo.conditions.RechargeCardQueryVo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dliberty.recharge.api.service.ITbRechargeCardService;
-import com.dliberty.recharge.dao.mapper.TbRechargeCardMapper;
-import com.dliberty.recharge.entity.TbRechargeCard;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dliberty.recharge.api.service.ITbRechargeCardService;
+import com.dliberty.recharge.common.constants.Constants;
+import com.dliberty.recharge.common.exception.CommonException;
+import com.dliberty.recharge.common.utils.EntityUtil;
+import com.dliberty.recharge.common.utils.GeneratorCardInfoUtil;
+import com.dliberty.recharge.dao.mapper.TbRechargeCardMapper;
+import com.dliberty.recharge.dto.RechargeCardDto;
+import com.dliberty.recharge.entity.TbRechargeCard;
+import com.dliberty.recharge.vo.CreateCardVo;
+import com.dliberty.recharge.vo.conditions.RechargeCardQueryVo;
 
 /**
  * <p>
