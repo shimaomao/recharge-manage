@@ -37,13 +37,13 @@ public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper,
             cardVo.getCardList().forEach(create -> {
                 for(int i = 1 ; i <= create.getNumber() ; i++){
                     TbRechargeCard card = new TbRechargeCard();
-                    card.setCardNo(GeneratorCardInfoUtil.getCardNo(card.getMoney()/100));
-                    card.setSecretKey(GeneratorCardInfoUtil.getCardNo(card.getMoney()/100));
+                    card.setCardNo(GeneratorCardInfoUtil.getCardNo(create.getMoney()/100));
+                    card.setSecretKey(GeneratorCardInfoUtil.getSecretKey(create.getMoney()/100));
                     card.setCreateTime(new Date());
                     card.setIsDeleted(Constants.DeletedFlag.DELETED_NO.getCode());
                     card.setIsUse(Constants.UseFlag.USED_NO.getCode());
                     card.setCreateUserId(cardVo.getUserId());
-                    card.setMoney(create.getMoney()/100);
+                    card.setMoney(create.getMoney());
                     list.add(card);
                     if(list.size()>=1000){
                         baseMapper.batchInsert(list);
