@@ -138,6 +138,50 @@ public class RedisClient {
 			return false;
 		}
 	}
+	
+	/**
+	 * setNx
+	 * 
+	 * @param key
+	 *            键
+	 * @param value
+	 *            值
+	 * @return true成功 false失败
+	 */
+	public boolean setNx(String key, Object value) {
+		try {
+			redisTemplate.opsForValue().setIfAbsent(key, value);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * setNx并设置时间
+	 * 
+	 * @param key
+	 *            键
+	 * @param value
+	 *            值
+	 * @param time
+	 *            时间(秒) time要大于0 如果time小于等于0 将设置无限期
+	 * @return true成功 false 失败
+	 */
+	public boolean setNx(String key, Object value, long time) {
+		try {
+			if (time > 0) {
+				redisTemplate.opsForValue().setIfAbsent(key, value, time, TimeUnit.SECONDS);
+			} else {
+				setNx(key, value);
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	/**
 	 * 递增

@@ -114,7 +114,7 @@ public class Response<T extends Object> implements Serializable {
 
 	public static <E> Response<E> ofPage(IPage<E> page) {
 		Response<E> response = new Response<>();
-		response.pageInfo = new PageBase(page.getTotal(), page.getCurrent(), page.getSize());
+		response.pageInfo = new PageBase(page.getTotal(), page.getCurrent(), page.getSize(),page.getPages());
 		response.rows = page.getRecords();
 		return response;
 	}
@@ -123,7 +123,7 @@ public class Response<T extends Object> implements Serializable {
 		Response<E> response = new Response<>();
 		if (ObjectUtils.isNotEmpty(pair.getValue1())) {
 			val page = pair.getValue1();
-			response.pageInfo = new PageBase(page.getTotalRecords(), page.getPageNum(), page.getPageSize());
+			response.pageInfo = new PageBase(page.getTotalRecords(), page.getPageNum(), page.getPageSize(),page.getTotalPages());
 		}
 		response.rows = pair.getValue0();
 		return response;
@@ -131,14 +131,14 @@ public class Response<T extends Object> implements Serializable {
 
 	public static <E> Response<E> ofPage(List<E> rows, PageInfo page) {
 		Response<E> response = new Response<>();
-		response.pageInfo = new PageBase(page.getTotalRecords(), page.getPageNum(), page.getPageSize());
+		response.pageInfo = new PageBase(page.getTotalRecords(), page.getPageNum(), page.getPageSize(),page.getTotalPages());
 		response.rows = CollectionUtils.isNotEmpty(rows) ? rows : new LinkedList<>();
 		return response;
 	}
 
 	public static <E, T> Response<E> ofPage(IPage<T> page, Class<E> clazz) {
 		Response<E> response = new Response<>();
-		response.pageInfo = new PageBase(page.getTotal(), page.getCurrent(), page.getSize());
+		response.pageInfo = new PageBase(page.getTotal(), page.getCurrent(), page.getSize(),page.getPages());
 		response.rows = BeanUtil.toBeans(page.getRecords(), clazz);
 		return response;
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -78,6 +79,13 @@ public class UmsAdminController extends BaseController {
 	@ApiOperation("注册")
 	public Response<Boolean> register(String userName,String password) {
 		userLoginService.register(userName, password);
+		return Response.of(true);
+	}
+	
+	@PostMapping("/logout")
+	@ApiOperation("退出")
+	public Response<Boolean> logout() {
+		SecurityContextHolder.clearContext();
 		return Response.of(true);
 	}
 
