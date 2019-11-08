@@ -25,9 +25,6 @@ public class RechargeConfig {
 	@Value("${RECHARGE.APP.SECRET}")
 	private String APP_SECRET;
 
-	@Value("${RECHARGE.ACCESS.TOKEN}")
-	private String accessToken;
-	
 	@Bean
 	public OpenClient init() {
 		// 创建一个客户端，默认连接超时时间为3秒，请求超时时间为15秒。
