@@ -2,6 +2,8 @@ package com.dliberty.recharge.common.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -35,6 +37,12 @@ public class WebUtil {
 			ip = request.getRemoteAddr();
 		}
 		return ip;
+	}
+	
+	public static String getUserName() {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
+		String userName = userDetails.getUsername();
+		return userName;
 	}
 
 }

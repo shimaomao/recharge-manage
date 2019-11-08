@@ -31,7 +31,7 @@ public class CodeGenerator {
 		 * ----------------------------- dao层代码生成配置
 		 * -----------------------------
 		 */
-		String url = "jdbc:mysql://139.155.25.211:3306/recharge?useUnicode=true&characterEncoding=utf8&useSSL=true&verifyServerCertificate=false";
+		String url = "jdbc:mysql://129.211.90.90:3306/recharge?useUnicode=true&characterEncoding=utf8&useSSL=true&verifyServerCertificate=false";
 		String driver = "com.mysql.cj.jdbc.Driver";
 
 		String projectPath = System.getProperty("user.dir"); // 项目路径 （注意后面拼接

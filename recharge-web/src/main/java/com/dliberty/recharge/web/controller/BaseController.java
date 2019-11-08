@@ -1,11 +1,10 @@
 package com.dliberty.recharge.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
 import com.dliberty.recharge.api.service.UsersService;
+import com.dliberty.recharge.common.utils.WebUtil;
 import com.dliberty.recharge.entity.Users;
 
 @Controller
@@ -24,8 +23,6 @@ public class BaseController {
 	}
 	
 	public String getUserName() {
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
-		String userName = userDetails.getUsername();
-		return userName;
+		return WebUtil.getUserName();
 	}
 }

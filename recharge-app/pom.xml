@@ -26,5 +26,12 @@
 			<artifactId>recharge-dao</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.qianmi.open</groupId>
+			<artifactId>open-sdk-jar</artifactId>
+			<version>20181227</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/lib/bm-elife-api-sdk-java-20181227.jar</systemPath>
+		</dependency>
 	</dependencies>
 </project>
