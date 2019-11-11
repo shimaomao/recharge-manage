@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dliberty.recharge.dto.RechargeCardDto;
 import com.dliberty.recharge.entity.TbRechargeCard;
-import com.dliberty.recharge.vo.CreateCardVo;
+import com.dliberty.recharge.vo.BatchCreateCardVo;
 import com.dliberty.recharge.vo.conditions.RechargeCardQueryVo;
 
 /**
@@ -23,7 +23,7 @@ public interface ITbRechargeCardService extends IService<TbRechargeCard> {
      * @param cardVo
      * @return
      */
-    Boolean batchCreateCard(CreateCardVo cardVo);
+    Boolean batchCreateCard(BatchCreateCardVo cardVo);
 
     /**
      * 删除
