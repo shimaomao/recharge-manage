@@ -93,11 +93,11 @@ public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper,
 				break;
 			}
 			case 1:{
-				card = baseMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("cardNo", keyword));
+				card = baseMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("card_no", keyword));
 				break;
 			}
 			default:{
-				card = baseMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secretKey", keyword));
+				card = baseMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secret_key", keyword));
 				break;
 			}
 		}

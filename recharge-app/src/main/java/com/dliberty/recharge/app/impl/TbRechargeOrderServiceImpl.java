@@ -60,7 +60,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
                 flag = true;
             }
         }else if(StringUtils.isNotEmpty(rechargeVo.getCardNo())){
-            rechargeCard = tbRechargeCardMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("cardNo" , rechargeVo.getCardNo()));
+            rechargeCard = tbRechargeCardMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("card_no" , rechargeVo.getCardNo()));
 
             if(rechargeCard != null && rechargeCard.getIsUse() == 0 &&
                     rechargeCard.getSecretKey().equals(rechargeVo.getSecretKey()) &&
@@ -68,7 +68,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
                 flag = true;
             }
         }else if(StringUtils.isNotEmpty(rechargeVo.getSecretKey())){
-            rechargeCard = tbRechargeCardMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secretKey" , rechargeVo.getCardNo()));
+            rechargeCard = tbRechargeCardMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secret_key" , rechargeVo.getCardNo()));
 
             if(rechargeCard != null && rechargeCard.getIsUse() == 0 &&
                     rechargeCard.getCardNo().equals(rechargeVo.getCardNo()) &&
@@ -128,7 +128,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
     @Override
     public String rechargeCallBack(RechargeCallBackDto callBackDto) {
 
-        TbRechargeOrder order = tbRechargeOrderMapper.selectOne(new QueryWrapper<TbRechargeOrder>().eq("threeOrderNo", callBackDto.getBillId()));
+        TbRechargeOrder order = tbRechargeOrderMapper.selectOne(new QueryWrapper<TbRechargeOrder>().eq("three_order_no", callBackDto.getBillId()));
         if(order != null){
             order.setOrderStatus(1);
             order.setUpdateTime(new Date());
