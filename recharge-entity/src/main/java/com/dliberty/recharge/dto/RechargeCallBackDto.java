@@ -1,9 +1,10 @@
 package com.dliberty.recharge.dto;
 
-import com.dliberty.recharge.common.vo.BaseVo;
-import lombok.Data;
-
 import java.io.Serializable;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * @author zhangzhichang
@@ -11,7 +12,11 @@ import java.io.Serializable;
  * @description
  */
 @Data
-public class RechargeCallBackDto extends BaseVo implements Serializable {
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class RechargeCallBackDto implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
     /**
      * 订单编号
