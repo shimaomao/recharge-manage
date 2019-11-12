@@ -2,12 +2,14 @@ package com.dliberty.recharge.app.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dliberty.recharge.api.service.IRechargeService;
+import com.dliberty.recharge.app.util.ConfigUtil;
 import com.dliberty.recharge.common.lang.data.DoubleUtils;
 import com.dliberty.recharge.common.lang.data.StringUtils;
 import com.dliberty.recharge.common.utils.DateFormatUtils;
 import com.dliberty.recharge.common.utils.EntityUtil;
 import com.dliberty.recharge.common.utils.GeneratorCardInfoUtil;
 import com.dliberty.recharge.dao.mapper.TbRechargeCardMapper;
+import com.dliberty.recharge.dto.RechargeCallBackDto;
 import com.dliberty.recharge.entity.TbRechargeCard;
 import com.dliberty.recharge.vo.RechargeVo;
 import com.qianmi.open.api.ApiException;
@@ -34,9 +36,6 @@ import java.util.Date;
  */
 @Service
 public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMapper, TbRechargeOrder> implements ITbRechargeOrderService {
-
-    @Value("${callback.url}")
-    private String callBackUrl;
 
     @Autowired
     private IRechargeService rechargeService;
@@ -103,6 +102,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
             tbRechargeOrderMapper.insert(order);
 
             //调用第三方接口
+            String callBackUrl = ConfigUtil.getString("callback.url");
             RechargeMobileCreateBillResponse rechargeMobileCreateBillResponse = rechargeService.payBill(rechargeVo.getMobile(), String.valueOf(rechargeVo.getMoney() / 100), order.getOrderNo(), callBackUrl, itemInfo.getMobileItemInfo().getItemId());
             //根据状态修改订单状态
             if(StringUtils.isNotEmpty(rechargeMobileCreateBillResponse.getErrorCode()) || rechargeMobileCreateBillResponse.getOrderDetailInfo() == null){
@@ -123,6 +123,20 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public String rechargeCallBack(RechargeCallBackDto callBackDto) {
+
+        TbRechargeOrder order = tbRechargeOrderMapper.selectOne(new QueryWrapper<TbRechargeOrder>().eq("threeOrderNo", callBackDto.getBillId()));
+        if(order != null){
+            order.setOrderStatus(1);
+            order.setUpdateTime(new Date());
+            tbRechargeOrderMapper.updateById(order);
+        }else{
+            //查不到
+        }
+        return "success";
     }
 
 }
