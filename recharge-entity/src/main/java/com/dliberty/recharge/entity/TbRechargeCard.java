@@ -44,7 +44,7 @@ public class TbRechargeCard implements Serializable {
     /**
      * 面额
      */
-    private Integer money;
+    private String money;
 
     /**
      * 是否使用(0:未使用，1:已使用)

@@ -3,8 +3,10 @@ package com.dliberty.recharge.app.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dliberty.recharge.common.utils.BeanUtil;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,7 @@ import com.dliberty.recharge.api.service.ITbRechargeCardService;
 import com.dliberty.recharge.common.constants.Constants;
 import com.dliberty.recharge.common.exception.CommonException;
 import com.dliberty.recharge.common.utils.EntityUtil;
-import com.dliberty.recharge.common.utils.GeneratorCardInfoUtil;
+import com.dliberty.recharge.app.util.GeneratorCardInfoUtil;
 import com.dliberty.recharge.dao.mapper.TbRechargeCardMapper;
 import com.dliberty.recharge.dto.RechargeCardDto;
 import com.dliberty.recharge.entity.TbRechargeCard;
@@ -36,24 +38,23 @@ import com.dliberty.recharge.vo.conditions.RechargeCardQueryVo;
 public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper, TbRechargeCard>
 		implements ITbRechargeCardService {
 
+	ExecutorService cachedThreadPool = Executors.newFixedThreadPool(4);
+
+	private static final int default_size = 1000;
+
 	@Override
 	public Boolean batchCreateCard(BatchCreateCardVo cardVo) {
-		List<TbRechargeCard> list = new ArrayList<>();
+
 		try {
-			for (int i = 1; i <= cardVo.getNumber(); i++) {
-				TbRechargeCard card = new TbRechargeCard();
-				card.setCardNo(GeneratorCardInfoUtil.getCardNo(cardVo.getMoney() / 100));
-				card.setSecretKey(GeneratorCardInfoUtil.getSecretKey(cardVo.getMoney() / 100));
-				card.setCreateTime(new Date());
-				card.setIsDeleted(Constants.DeletedFlag.DELETED_NO.getCode());
-				card.setIsUse(Constants.UseFlag.USED_NO.getCode());
-				card.setCreateUserId(cardVo.getUserId());
-				card.setMoney(cardVo.getMoney());
-				list.add(card);
+			int number = cardVo.getNumber() / default_size;
+			for (int i = 0 ; i <= number ; i++){
+				int size = default_size;
+				if(i == number){
+					size = cardVo.getNumber() - (number * default_size);
+				}
+				cachedThreadPool.execute(new CreatRechargeCardThread(size , cardVo , baseMapper));
 			}
-			if (list != null && list.size() > 0) {
-				saveBatch(list);
-			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -107,5 +108,38 @@ public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper,
 			return dto;
 		}
 		return null;
+	}
+}
+
+class CreatRechargeCardThread implements Runnable{
+	private int size ;
+	private BatchCreateCardVo cardVo;
+	private TbRechargeCardMapper tbRechargeCardMapper;
+
+	public CreatRechargeCardThread(int size, BatchCreateCardVo cardVo, TbRechargeCardMapper tbRechargeCardMapper) {
+		this.size = size;
+		this.cardVo = cardVo;
+		this.tbRechargeCardMapper = tbRechargeCardMapper;
+	}
+
+	@Override
+	public void run() {
+		if(size >= 1){
+			List<TbRechargeCard> list = new ArrayList<>();
+			for (int i = 1; i <= size; i++) {
+				TbRechargeCard card = new TbRechargeCard();
+				card.setCardNo(GeneratorCardInfoUtil.getCardNo(cardVo.getMoney()));
+				card.setSecretKey(GeneratorCardInfoUtil.getSecretKey(UUID.randomUUID().toString()));
+				card.setCreateTime(new Date());
+				card.setIsDeleted(Constants.DeletedFlag.DELETED_NO.getCode());
+				card.setIsUse(Constants.UseFlag.USED_NO.getCode());
+				card.setCreateUserId(cardVo.getUserId());
+				card.setMoney(cardVo.getMoney());
+				list.add(card);
+			}
+			if (list != null && list.size() > 0) {
+				tbRechargeCardMapper.batchInsert(list);
+			}
+		}
 	}
 }

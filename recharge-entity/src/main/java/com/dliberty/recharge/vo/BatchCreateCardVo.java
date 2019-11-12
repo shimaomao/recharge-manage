@@ -10,7 +10,7 @@ import lombok.Data;
 public class BatchCreateCardVo extends BaseVo {
 
     @ApiModelProperty(value = "充值卡面额")
-    private Integer money;
+    private String money;
 
     @ApiModelProperty(value = "数量")
     private Integer number;

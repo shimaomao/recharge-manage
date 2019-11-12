@@ -29,7 +29,7 @@ public class RechargeController extends BaseController {
     @PostMapping("/submit")
     public Response<Boolean> recharge(RechargeVo rechargeVo){
 
-        return Response.ofData(rechargeOrderService.rechargeOrder(rechargeVo));
+        return rechargeOrderService.rechargeOrder(rechargeVo);
     }
 
     @RequestMapping(value = "/callback", method = {RequestMethod.POST, RequestMethod.GET})
@@ -37,14 +37,14 @@ public class RechargeController extends BaseController {
 
         String tid = (String) request.getAttribute("tid");
         String timestamp = (String) request.getAttribute("timestamp");
-        String userId = (String) request.getAttribute("user_id");
+        String shopId = (String) request.getAttribute("user_id");
         String rechargeState = (String) request.getAttribute("recharge_state");
 
         RechargeCallBackDto dto = new RechargeCallBackDto();
         dto.setBillId(tid);
         dto.setTimestamp(timestamp);
         dto.setRechargeState(rechargeState);
-        dto.setUserId(userId);
+        dto.setShopId(shopId);
         // 验证签名，其他业务逻辑
         return rechargeOrderService.rechargeCallBack(dto);
         // 给服务器响应success字符串（收到请求后5秒内），否则将每一分钟发送回调信息一次，共发送4次。

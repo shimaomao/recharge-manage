@@ -105,8 +105,9 @@ public class RechargeServiceImpl implements IRechargeService {
 		record.setInParam(JSONObject.toJSONString(params));
 
 		T response = openClient.execute(request, accessToken);
-		record.setIsSuccess(response.getErrorCode());
+		record.setIsSuccess(response!=null?"1":"0");
 		record.setCreateTime(new Date());
+		record.setOutResult(JSONObject.toJSONString(response));
 		tbApiRecordMapper.insert(record);
 		return response;
 	}

@@ -39,7 +39,7 @@ public class TbRechargeOrder implements Serializable {
     /**
      * 商户订单金额
      */
-    private Integer orderMoney;
+    private String orderMoney;
 
     /**
      * 订单状态(0：保存，1:充值成功，2：充值中，3：充值失败)
@@ -64,7 +64,7 @@ public class TbRechargeOrder implements Serializable {
     /**
      * 第三方订单金额
      */
-    private Integer threeOrderMoney;
+    private String threeOrderMoney;
 
     /**
      * 创建时间

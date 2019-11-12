@@ -21,7 +21,7 @@ public class RechargeCallBackDto extends BaseVo implements Serializable {
     /**
      * 直销商编号
      */
-    private String userId;
+    private String shopId;
 
     /**
      * 时间戳

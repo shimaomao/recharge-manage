@@ -1,6 +1,7 @@
 package com.dliberty.recharge.api.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dliberty.recharge.common.vo.Response;
 import com.dliberty.recharge.dto.RechargeCallBackDto;
 import com.dliberty.recharge.entity.TbRechargeOrder;
 import com.dliberty.recharge.vo.RechargeVo;
@@ -20,7 +21,7 @@ public interface ITbRechargeOrderService extends IService<TbRechargeOrder> {
      * @param rechargeVo
      * @return
      */
-    Boolean rechargeOrder(RechargeVo rechargeVo);
+    Response<Boolean> rechargeOrder(RechargeVo rechargeVo);
 
     /**
      *

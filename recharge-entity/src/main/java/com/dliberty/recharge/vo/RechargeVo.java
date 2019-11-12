@@ -24,7 +24,7 @@ public class RechargeVo extends BaseVo implements Serializable {
     private String secretKey;
 
     @ApiModelProperty(value = "充值金额" , required = true)
-    private Integer money;
+    private String money;
 
     @ApiModelProperty(value = "充值手机号" , required = true)
     private String mobile;
