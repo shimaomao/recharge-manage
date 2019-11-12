@@ -20,7 +20,7 @@ public class ConfigUtil {
     @Autowired
     private TbSysConfigMapper configMapper;
 
-    public static ConfigUtil configUtil;
+    private static ConfigUtil configUtil;
 
     @PostConstruct
     public void init(){

@@ -3,6 +3,7 @@ package com.dliberty.recharge.app.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dliberty.recharge.api.service.IRechargeService;
 import com.dliberty.recharge.app.util.ConfigUtil;
+import com.dliberty.recharge.app.util.DistributedLockUtil;
 import com.dliberty.recharge.common.lang.data.StringUtils;
 import com.dliberty.recharge.common.utils.DateFormatUtils;
 import com.dliberty.recharge.common.utils.EntityUtil;
@@ -45,31 +46,35 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
 
     @Override
     public Response<Boolean> rechargeOrder(RechargeVo rechargeVo) {
-        //校验数据合法性
-        TbRechargeCard rechargeCard = null;
-        boolean flag = false;
-        String errorMessage = "参数有误";
-        if(StringUtils.isNotEmpty(rechargeVo.getSecretKey()) && StringUtils.isNotEmpty(rechargeVo.getMobile())){
-            rechargeCard = tbRechargeCardMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secret_key" , rechargeVo.getSecretKey()));
-            if(rechargeCard == null){
-                errorMessage = "密钥输入有误";
-            }else if(rechargeCard.getIsUse() != 0){
-                errorMessage = "充值卡已使用";
-            }else{
-                //验签
-                String sign = Md5Crypt.md5Crypt((rechargeCard.getCardNo() + rechargeCard.getSecretKey() + rechargeCard.getMoney() + rechargeCard.getIsUse()).getBytes());
-                if(sign.equals(rechargeVo.getSign())){
-                    flag = true;
+
+        while (!DistributedLockUtil.tryLock(rechargeVo.getSecretKey() , 10L)){
+
+        }
+        try{
+            //校验数据合法性
+            TbRechargeCard rechargeCard = null;
+            boolean flag = false;
+            String errorMessage = "参数有误";
+            if(StringUtils.isNotEmpty(rechargeVo.getSecretKey()) && StringUtils.isNotEmpty(rechargeVo.getMobile())){
+                rechargeCard = tbRechargeCardMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secret_key" , rechargeVo.getSecretKey()));
+                if(rechargeCard == null){
+                    errorMessage = "密钥输入有误";
+                }else if(rechargeCard.getIsUse() != 0){
+                    errorMessage = "充值卡已使用";
                 }else{
-                    errorMessage = "数据篡改，验签失败";
+                    //验签
+                    String sign = Md5Crypt.md5Crypt((rechargeCard.getCardNo() + rechargeCard.getSecretKey() + rechargeCard.getMoney() + rechargeCard.getIsUse()).getBytes());
+                    if(sign.equals(rechargeVo.getSign())){
+                        flag = true;
+                    }else{
+                        errorMessage = "数据篡改，验签失败";
+                    }
                 }
             }
-        }
-        if(!flag){
-            return Response.ofData(flag , errorMessage);
-        }
+            if(!flag){
+                return Response.ofData(flag , errorMessage);
+            }
 
-        try {
             String reverseFlag = "1";
             //查询所需要的信息
             RechargeMobileGetItemInfoResponse itemInfo = rechargeService.getItemInfo(rechargeVo.getMobile(), rechargeCard.getMoney());
@@ -115,9 +120,12 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
 
             return Response.ofData(resultFlag);
 
-        } catch (ApiException e) {
+        }catch (Exception e){
             e.printStackTrace();
+        }finally {
+            DistributedLockUtil.releaseLock(rechargeVo.getSecretKey());
         }
+
         return Response.ofData(false);
     }
 
