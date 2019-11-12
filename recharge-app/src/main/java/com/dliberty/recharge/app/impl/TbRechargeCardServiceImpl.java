@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.dliberty.recharge.common.utils.BeanUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,5 +79,33 @@ public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper,
 		vo.getPage().setOptimizeCountSql(false);
 		vo.getPage().setSearchCount(false);
 		return baseMapper.listPage(vo.getPage(), vo);
+	}
+
+	@Override
+	public RechargeCardDto getRechargeCardInfo(String keyword, Integer type) {
+		//（0：id、1:卡号、2:密钥）
+		TbRechargeCard card = null;
+		RechargeCardDto dto = new RechargeCardDto();
+		switch (type){
+			case 0:{
+				Long id = Long.valueOf(keyword);
+				card = baseMapper.selectById(id);
+				break;
+			}
+			case 1:{
+				card = baseMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("cardNo", keyword));
+				break;
+			}
+			default:{
+				card = baseMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secretKey", keyword));
+				break;
+			}
+		}
+
+		if(card != null){
+			BeanUtil.copyProperties(card , dto);
+			return dto;
+		}
+		return null;
 	}
 }

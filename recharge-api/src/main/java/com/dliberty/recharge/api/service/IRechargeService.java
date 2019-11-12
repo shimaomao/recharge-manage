@@ -18,7 +18,6 @@ public interface IRechargeService {
 	 * 查询单个话费直充商品
 	 * @param mobile 充值手机
 	 * @param rechargeAmount 充值金额
-	 * @param accessToken token
 	 * @return
 	 */
 	RechargeMobileGetItemInfoResponse getItemInfo(String mobile,String rechargeAmount) throws ApiException;

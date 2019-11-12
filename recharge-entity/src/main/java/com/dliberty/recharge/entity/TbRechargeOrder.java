@@ -42,7 +42,7 @@ public class TbRechargeOrder implements Serializable {
     private Integer orderMoney;
 
     /**
-     * 订单状态(1:充值成功，2：充值中，3：充值失败)
+     * 订单状态(0：保存，1:充值成功，2：充值中，3：充值失败)
      */
     private Integer orderStatus;
 

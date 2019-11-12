@@ -1,5 +1,7 @@
 package com.dliberty.recharge.web.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,9 @@ import com.dliberty.recharge.vo.conditions.RechargeCardQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+/**
+ * @author changzzc
+ */
 @Api(value = "充值卡相关接口", tags = "RechargeCardController")
 @RestController
 @RequestMapping("/recharge/card")
@@ -43,5 +48,15 @@ public class RechargeCardController extends BaseController {
 	@DeleteMapping("/delete/{id}")
 	public Response<Boolean> delete(@PathVariable Integer id) {
 		return Response.of(tbRechargeCardService.delete(id));
+	}
+
+	@ApiOperation(value = "查询充值卡详情")
+	@GetMapping("/query/{keyword}/{type}")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "keyword" , value = "查询关键字" , dataType = "String"),
+			@ApiImplicitParam(name = "type" , value = "查询类型（0：id、1:卡号、2:密钥）" ,dataType = "Integer")
+	})
+	public Response<RechargeCardDto> getRechargeCard(@PathVariable("keyword") String keyword , @PathVariable("type")Integer type){
+		return Response.ofData(tbRechargeCardService.getRechargeCardInfo(keyword, type));
 	}
 }

@@ -40,4 +40,12 @@ public interface ITbRechargeCardService extends IService<TbRechargeCard> {
      */
     IPage<RechargeCardDto> listPage(RechargeCardQueryVo vo);
 
+    /**
+     * 查询单个充值卡
+     * @param keyword 查询关键字
+     * @param type 查询类型（0：id、1:卡号、2:密钥）
+     * @return
+     */
+    RechargeCardDto getRechargeCardInfo(String keyword , Integer type);
+
 }
