@@ -14,19 +14,15 @@ import java.io.Serializable;
 @Data
 public class RechargeVo extends BaseVo implements Serializable {
 
-    @ApiModelProperty(value = "充值卡id" , required = true)
-    private Long id;
-
-    @ApiModelProperty(value = "充值卡卡号" , required = true)
-    private String cardNo;
-
     @ApiModelProperty(value = "充值卡密钥" , required = true)
     private String secretKey;
 
-    @ApiModelProperty(value = "充值金额" , required = true)
-    private String money;
-
     @ApiModelProperty(value = "充值手机号" , required = true)
     private String mobile;
+    /**
+     * 验签
+     */
+    @ApiModelProperty(value = "验签" , required = true)
+    private String sign;
 
 }

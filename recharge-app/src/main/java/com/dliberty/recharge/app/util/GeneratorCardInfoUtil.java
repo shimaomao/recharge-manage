@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 
 @Component
@@ -60,9 +61,15 @@ public class GeneratorCardInfoUtil {
         return sb.toString();
     }
 
-    public static String getSecretKey(String cardNo){
+
+    public static String getSecretKey(String money){
         StringBuffer sb = new StringBuffer();
-        int hashCode = cardNo.hashCode();
+        //金额
+        String moneyStr = getNumberStr(money);
+        sb.append(moneyStr);
+
+        //随机码
+        int hashCode = UUID.randomUUID().toString().hashCode();
         if(hashCode < 0){
             hashCode = -hashCode;
         }
@@ -75,20 +82,6 @@ public class GeneratorCardInfoUtil {
 
         return sb.toString();
     }
-
-    /*public static String getSecretKey(String money){
-        StringBuffer sb = new StringBuffer();
-        sb.append(SECRET_KEY_PREFIX);
-
-        //金额
-        String moneyStr = getNumberStr(money);
-        sb.append(moneyStr);
-
-        //随机码
-        sb.append(randomNumber(12));
-
-        return sb.toString();
-    }*/
 
     /**
      * 随机生成数字字符串

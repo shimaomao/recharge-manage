@@ -15,6 +15,7 @@ import com.dliberty.recharge.vo.RechargeVo;
 import com.qianmi.open.api.ApiException;
 import com.qianmi.open.api.response.RechargeMobileCreateBillResponse;
 import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,19 +49,20 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
         TbRechargeCard rechargeCard = null;
         boolean flag = false;
         String errorMessage = "参数有误";
-        if(rechargeVo.getId() != null){
-            rechargeCard = tbRechargeCardMapper.selectById(rechargeVo.getId());
-            if(rechargeCard == null ||
-                    !rechargeCard.getCardNo().equals(rechargeVo.getCardNo()) ||
-                    !rechargeCard.getMoney().equals(rechargeVo.getMoney())){
-                errorMessage = "参数有误";
-            }else if(!rechargeCard.getSecretKey().equals(rechargeVo.getSecretKey())){
+        if(StringUtils.isNotEmpty(rechargeVo.getSecretKey()) && StringUtils.isNotEmpty(rechargeVo.getMobile())){
+            rechargeCard = tbRechargeCardMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secret_key" , rechargeVo.getSecretKey()));
+            if(rechargeCard == null){
                 errorMessage = "密钥输入有误";
-            }
-            else if(rechargeCard.getIsUse() != 0){
+            }else if(rechargeCard.getIsUse() != 0){
                 errorMessage = "充值卡已使用";
             }else{
-                flag = true;
+                //验签
+                String sign = Md5Crypt.md5Crypt((rechargeCard.getCardNo() + rechargeCard.getSecretKey() + rechargeCard.getMoney() + rechargeCard.getIsUse()).getBytes());
+                if(sign.equals(rechargeVo.getSign())){
+                    flag = true;
+                }else{
+                    errorMessage = "数据篡改，验签失败";
+                }
             }
         }
         if(!flag){
@@ -70,7 +72,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
         try {
             String reverseFlag = "1";
             //查询所需要的信息
-            RechargeMobileGetItemInfoResponse itemInfo = rechargeService.getItemInfo(rechargeVo.getMobile(), rechargeVo.getMoney());
+            RechargeMobileGetItemInfoResponse itemInfo = rechargeService.getItemInfo(rechargeVo.getMobile(), rechargeCard.getMoney());
             if(StringUtils.isNotEmpty(itemInfo.getErrorCode()) || itemInfo.getMobileItemInfo() == null || reverseFlag.equals(itemInfo.getMobileItemInfo().getReverseFlag())){
                 return Response.ofData(false , "接口数据不能使用");
             }
@@ -80,7 +82,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
             TbRechargeOrder order = new TbRechargeOrder();
             order.setCreateTime(new Date());
             order.setIsDeleted(0);
-            order.setOrderMoney(rechargeVo.getMoney());
+            order.setOrderMoney(rechargeCard.getMoney());
             order.setOrderNo(DateFormatUtils.format(new Date() , "yyyyMMddHHmmssSSS") + GeneratorCardInfoUtil.randomNumber(6));
             order.setOrderStatus(0);
             order.setRechargeCardId(rechargeCard.getId());
@@ -90,15 +92,15 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
 
             //调用第三方接口
             String callBackUrl = ConfigUtil.getString("callback.url");
-            RechargeMobileCreateBillResponse rechargeMobileCreateBillResponse = rechargeService.payBill(rechargeVo.getMobile(), rechargeVo.getMoney(), order.getOrderNo(), callBackUrl, itemInfo.getMobileItemInfo().getItemId());
+            RechargeMobileCreateBillResponse cbResponse = rechargeService.payBill(rechargeVo.getMobile(), rechargeCard.getMoney(), order.getOrderNo(), callBackUrl, itemInfo.getMobileItemInfo().getItemId());
             //根据状态修改订单状态
-            if(StringUtils.isNotEmpty(rechargeMobileCreateBillResponse.getErrorCode()) || rechargeMobileCreateBillResponse.getOrderDetailInfo() == null){
+            if(StringUtils.isNotEmpty(cbResponse.getErrorCode()) || cbResponse.getOrderDetailInfo() == null){
                 resultFlag = false;
 
             }
-            if (rechargeMobileCreateBillResponse.getOrderDetailInfo() != null) {
-                order.setThreeOrderMoney(rechargeMobileCreateBillResponse.getOrderDetailInfo().getOrderCost());
-                order.setThreeOrderNo(rechargeMobileCreateBillResponse.getOrderDetailInfo().getBillId());
+            if (cbResponse.getOrderDetailInfo() != null) {
+                order.setThreeOrderMoney(cbResponse.getOrderDetailInfo().getOrderCost());
+                order.setThreeOrderNo(cbResponse.getOrderDetailInfo().getBillId());
             }
             order.setOrderStatus(resultFlag?2:3);
             EntityUtil.setUpdateValue(order);

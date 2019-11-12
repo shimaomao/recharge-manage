@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dliberty.recharge.common.utils.BeanUtil;
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,6 +106,8 @@ public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper,
 
 		if(card != null){
 			BeanUtil.copyProperties(card , dto);
+			String sign = Md5Crypt.md5Crypt((dto.getCardNo() + dto.getSecretKey() + dto.getMoney() + dto.getIsUse()).getBytes());
+			dto.setSign(sign);
 			return dto;
 		}
 		return null;
@@ -129,7 +132,7 @@ class CreatRechargeCardThread implements Runnable{
 			for (int i = 1; i <= size; i++) {
 				TbRechargeCard card = new TbRechargeCard();
 				card.setCardNo(GeneratorCardInfoUtil.getCardNo(cardVo.getMoney()));
-				card.setSecretKey(GeneratorCardInfoUtil.getSecretKey(UUID.randomUUID().toString()));
+				card.setSecretKey(GeneratorCardInfoUtil.getSecretKey(cardVo.getMoney()));
 				card.setCreateTime(new Date());
 				card.setIsDeleted(Constants.DeletedFlag.DELETED_NO.getCode());
 				card.setIsUse(Constants.UseFlag.USED_NO.getCode());

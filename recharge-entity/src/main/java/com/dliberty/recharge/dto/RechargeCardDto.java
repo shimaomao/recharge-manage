@@ -76,4 +76,9 @@ public class RechargeCardDto implements Serializable {
      * 修改时间
      */
     private Date updateTime;
+
+    /**
+     * 验签
+     */
+    private String sign;
 }
