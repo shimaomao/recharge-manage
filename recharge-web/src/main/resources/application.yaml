@@ -2,7 +2,7 @@ server:
   port: 8088
   servlet:
     context-path: /recharge
-debug: true
+debug: false
 spring:
   datasource:
     url: jdbc:mysql://129.211.90.90:3306/recharge?useUnicode=true&characterEncoding=utf8&useSSL=true&verifyServerCertificate=false
@@ -51,4 +51,6 @@ RECHARGE:
       KEY: 10001319
       SECRET: gUjpChpSnyrEr4RdURxtyx695kLE70Ar
    ACCESS:
-      TOKEN: e68f68022e324389b4f9d1dacea794dd
+      TOKEN: 333bdfb8339640a4b40259078a2ac442
+   CALLBACK:
+      URL: http://www.baidu.com
