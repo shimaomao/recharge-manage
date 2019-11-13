@@ -51,84 +51,86 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
     @Override
     public Response<Boolean> rechargeOrder(RechargeVo rechargeVo) {
 
-        while (!DistributedLockUtil.tryLock(rechargeVo.getSecretKey() , 10L)){
-
-        }
-        try{
-            //校验数据合法性
-            TbRechargeCard rechargeCard = null;
-            boolean flag = false;
-            String errorMessage = "参数有误";
-            if(StringUtils.isNotEmpty(rechargeVo.getSecretKey()) && StringUtils.isNotEmpty(rechargeVo.getMobile())){
-                rechargeCard = tbRechargeCardMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secret_key" , rechargeVo.getSecretKey()));
-                if(rechargeCard == null){
-                    errorMessage = "密钥输入有误";
-                }else if(rechargeCard.getIsUse() != 0){
-                    errorMessage = "充值卡已使用";
-                }else{
-                    //验签
-                    String sign = Md5Crypt.md5Crypt((rechargeCard.getCardNo() + rechargeCard.getSecretKey() + rechargeCard.getMoney() + rechargeCard.getIsUse()).getBytes());
-                    if(sign.equals(rechargeVo.getSign())){
-                        flag = true;
+        if (DistributedLockUtil.tryLock(rechargeVo.getSecretKey() , 10L)){
+            try{
+                //校验数据合法性
+                TbRechargeCard rechargeCard = null;
+                boolean flag = false;
+                String errorMessage = "参数有误";
+                if(StringUtils.isNotEmpty(rechargeVo.getSecretKey()) && StringUtils.isNotEmpty(rechargeVo.getMobile())){
+                    rechargeCard = tbRechargeCardMapper.selectOne(new QueryWrapper<TbRechargeCard>().eq("secret_key" , rechargeVo.getSecretKey()));
+                    if(rechargeCard == null){
+                        errorMessage = "密钥输入有误";
+                    }else if(rechargeCard.getIsUse() != 0){
+                        errorMessage = "充值卡已使用";
                     }else{
-                        errorMessage = "数据篡改，验签失败";
+                        //验签
+                        String sign = Md5Crypt.md5Crypt((rechargeCard.getCardNo() + rechargeCard.getSecretKey() + rechargeCard.getMoney() + rechargeCard.getIsUse()).getBytes());
+                        if(sign.equals(rechargeVo.getSign())){
+                            flag = true;
+                        }else{
+                            errorMessage = "数据篡改，验签失败";
+                        }
                     }
                 }
+                if(!flag){
+                    return Response.ofData(flag , errorMessage);
+                }
+
+                String reverseFlag = "1";
+                //查询所需要的信息
+                RechargeMobileGetItemInfoResponse itemInfo = rechargeService.getItemInfo(rechargeVo.getMobile(), rechargeCard.getMoney());
+                if(StringUtils.isNotEmpty(itemInfo.getErrorCode()) || itemInfo.getMobileItemInfo() == null || reverseFlag.equals(itemInfo.getMobileItemInfo().getReverseFlag())){
+                    return Response.ofData(false , "接口数据不能使用");
+                }
+
+                boolean resultFlag = true;
+                //生成订单编号，并创建订单
+                TbRechargeOrder order = new TbRechargeOrder();
+                order.setCreateTime(new Date());
+                order.setIsDeleted(0);
+                order.setOrderMoney(rechargeCard.getMoney());
+                order.setOrderNo(DateFormatUtils.format(new Date() , "yyyyMMddHHmmssSSS") + GeneratorCardInfoUtil.randomNumber(6));
+                order.setOrderStatus(0);
+                order.setRechargeCardId(rechargeCard.getId());
+                order.setRechargeMobile(rechargeVo.getMobile());
+                order.setIsDeleted(0);
+                save(order);
+
+                //调用第三方接口
+                String callBackUrl = ConfigUtil.getString("callback.url");
+                RechargeMobileCreateBillResponse cbResponse = rechargeService.payBill(rechargeVo.getMobile(), rechargeCard.getMoney(), order.getOrderNo(), callBackUrl, itemInfo.getMobileItemInfo().getItemId());
+                //根据状态修改订单状态
+                if(StringUtils.isNotEmpty(cbResponse.getErrorCode()) || cbResponse.getOrderDetailInfo() == null){
+                    resultFlag = false;
+
+                }
+                if (cbResponse.getOrderDetailInfo() != null) {
+                    order.setThreeOrderMoney(cbResponse.getOrderDetailInfo().getOrderCost());
+                    order.setThreeOrderNo(cbResponse.getOrderDetailInfo().getBillId());
+                }
+                order.setOrderStatus(resultFlag?2:3);
+                EntityUtil.setUpdateValue(order);
+                updateById(order);
+
+                //修改卡位已使用
+                EntityUtil.setUpdateValue(rechargeCard);
+                rechargeCard.setIsUse(1);
+                rechargeCard.setUseMobile(rechargeVo.getMobile());
+                rechargeCard.setUseTime(new Date());
+                tbRechargeCardMapper.updateById(rechargeCard);
+
+                return Response.ofData(resultFlag);
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                DistributedLockUtil.releaseLock(rechargeVo.getSecretKey());
             }
-            if(!flag){
-                return Response.ofData(flag , errorMessage);
-            }
-
-            String reverseFlag = "1";
-            //查询所需要的信息
-            RechargeMobileGetItemInfoResponse itemInfo = rechargeService.getItemInfo(rechargeVo.getMobile(), rechargeCard.getMoney());
-            if(StringUtils.isNotEmpty(itemInfo.getErrorCode()) || itemInfo.getMobileItemInfo() == null || reverseFlag.equals(itemInfo.getMobileItemInfo().getReverseFlag())){
-                return Response.ofData(false , "接口数据不能使用");
-            }
-
-            boolean resultFlag = true;
-            //生成订单编号，并创建订单
-            TbRechargeOrder order = new TbRechargeOrder();
-            order.setCreateTime(new Date());
-            order.setIsDeleted(0);
-            order.setOrderMoney(rechargeCard.getMoney());
-            order.setOrderNo(DateFormatUtils.format(new Date() , "yyyyMMddHHmmssSSS") + GeneratorCardInfoUtil.randomNumber(6));
-            order.setOrderStatus(0);
-            order.setRechargeCardId(rechargeCard.getId());
-            order.setRechargeMobile(rechargeVo.getMobile());
-            order.setIsDeleted(0);
-            save(order);
-
-            //调用第三方接口
-            String callBackUrl = ConfigUtil.getString("callback.url");
-            RechargeMobileCreateBillResponse cbResponse = rechargeService.payBill(rechargeVo.getMobile(), rechargeCard.getMoney(), order.getOrderNo(), callBackUrl, itemInfo.getMobileItemInfo().getItemId());
-            //根据状态修改订单状态
-            if(StringUtils.isNotEmpty(cbResponse.getErrorCode()) || cbResponse.getOrderDetailInfo() == null){
-                resultFlag = false;
-
-            }
-            if (cbResponse.getOrderDetailInfo() != null) {
-                order.setThreeOrderMoney(cbResponse.getOrderDetailInfo().getOrderCost());
-                order.setThreeOrderNo(cbResponse.getOrderDetailInfo().getBillId());
-            }
-            order.setOrderStatus(resultFlag?2:3);
-            EntityUtil.setUpdateValue(order);
-            updateById(order);
-
-            //修改卡位已使用
-            EntityUtil.setUpdateValue(rechargeCard);
-            rechargeCard.setIsUse(1);
-            rechargeCard.setUseMobile(rechargeVo.getMobile());
-            rechargeCard.setUseTime(new Date());
-            tbRechargeCardMapper.updateById(rechargeCard);
-
-            return Response.ofData(resultFlag);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            DistributedLockUtil.releaseLock(rechargeVo.getSecretKey());
+        }else{
+            return Response.ofData(false,"充值卡已使用");
         }
+
 
         return Response.ofData(false);
     }
