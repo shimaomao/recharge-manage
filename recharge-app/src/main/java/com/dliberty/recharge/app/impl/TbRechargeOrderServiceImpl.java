@@ -10,6 +10,7 @@ import com.dliberty.recharge.common.lang.data.StringUtils;
 import com.dliberty.recharge.common.utils.DateFormatUtils;
 import com.dliberty.recharge.common.utils.EntityUtil;
 import com.dliberty.recharge.app.util.GeneratorCardInfoUtil;
+import com.dliberty.recharge.common.utils.Md5;
 import com.dliberty.recharge.common.vo.Response;
 import com.dliberty.recharge.dao.mapper.TbRechargeCardMapper;
 import com.dliberty.recharge.dto.RechargeCallBackDto;
@@ -65,7 +66,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
                         errorMessage = "充值卡已使用";
                     }else{
                         //验签
-                        String sign = Md5Crypt.md5Crypt((rechargeCard.getCardNo() + rechargeCard.getSecretKey() + rechargeCard.getMoney() + rechargeCard.getIsUse()).getBytes());
+                        String sign = Md5.MD5(rechargeCard.getCardNo() + rechargeCard.getSecretKey() + rechargeCard.getMoney() + rechargeCard.getIsUse());
                         if(sign.equals(rechargeVo.getSign())){
                             flag = true;
                         }else{

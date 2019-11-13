@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dliberty.recharge.common.utils.BeanUtil;
+import com.dliberty.recharge.common.utils.Md5;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,7 +107,7 @@ public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper,
 
 		if(card != null){
 			BeanUtil.copyProperties(card , dto);
-			String sign = Md5Crypt.md5Crypt((dto.getCardNo() + dto.getSecretKey() + dto.getMoney() + dto.getIsUse()).getBytes());
+			String sign = Md5.MD5(dto.getCardNo() + dto.getSecretKey() + dto.getMoney() + dto.getIsUse());
 			dto.setSign(sign);
 			return dto;
 		}
