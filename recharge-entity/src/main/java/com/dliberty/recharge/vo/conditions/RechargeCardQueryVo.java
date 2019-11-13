@@ -1,6 +1,7 @@
 package com.dliberty.recharge.vo.conditions;
 
 import com.dliberty.recharge.common.vo.BaseVo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -25,4 +26,7 @@ public class RechargeCardQueryVo extends BaseVo {
 
     @ApiModelProperty(value = "面额")
     private String money;
+
+    @JsonIgnore
+    private int start;
 }

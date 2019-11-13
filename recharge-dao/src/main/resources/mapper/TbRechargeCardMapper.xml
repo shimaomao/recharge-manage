@@ -55,4 +55,35 @@
         order by id desc
     </select>
 
+    <sql id="export_sql">
+        <if test="keyword != null and keyword != ''">
+            and (card_no like CONCAT('%',#{keyword},'%') or use_mobile like CONCAT('%',#{keyword},'%') )
+        </if>
+        <if test="useFlag != null">
+            and is_use = #{useFlag}
+        </if>
+        <if test="money != null">
+            and money = #{money}
+        </if>
+
+        <if test="startDate != null">
+            and create_time &gt;= #{startDate}
+        </if>
+
+        <if test="endDate != null">
+            and create_time &lt;= #{endDate}
+        </if>
+    </sql>
+    <select id="queryForExport" resultType="com.dliberty.recharge.dto.ExportRechargeCardDto" parameterType="com.dliberty.recharge.vo.conditions.RechargeOrderQueryVo">
+        select card_no, secret_key, money from tb_recharge_card where is_deleted = 0
+        <include refid="export_sql" />
+        order by id desc
+        limit #{start, jdbcType=INTEGER} , #{pageSize , jdbcType=INTEGER}
+    </select>
+
+    <select id="exportCount" resultType="java.lang.Integer" parameterType="com.dliberty.recharge.vo.conditions.RechargeOrderQueryVo">
+        select count(1) from tb_recharge_card where is_deleted = 0
+        <include refid="export_sql" />
+    </select>
+
 </mapper>

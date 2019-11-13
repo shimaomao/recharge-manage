@@ -2,6 +2,7 @@ package com.dliberty.recharge.dao.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dliberty.recharge.common.mybatis.mapper.BaseMapper;
+import com.dliberty.recharge.dto.ExportRechargeCardDto;
 import com.dliberty.recharge.dto.RechargeCardDto;
 import com.dliberty.recharge.entity.TbRechargeCard;
 import com.dliberty.recharge.vo.conditions.RechargeCardQueryVo;
@@ -33,5 +34,19 @@ public interface TbRechargeCardMapper extends BaseMapper<TbRechargeCard> {
      * @return
      */
     IPage<RechargeCardDto> listPage(@Param("page") IPage<?> page, @Param("vo") RechargeCardQueryVo vo);
+
+    /**
+     * 导出分页查询
+     * @param vo
+     * @return
+     */
+    List<ExportRechargeCardDto>  queryForExport(RechargeCardQueryVo vo);
+
+    /**
+     * 导出时统计
+     * @param vo
+     * @return
+     */
+    int exportCount(RechargeCardQueryVo vo);
 
 }

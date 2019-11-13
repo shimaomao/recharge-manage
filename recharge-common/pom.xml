@@ -91,6 +91,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>easyexcel</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.qianmi.open</groupId>
 			<artifactId>open-sdk-jar</artifactId>
 			<version>20181227</version>

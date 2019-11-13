@@ -2,10 +2,13 @@ package com.dliberty.recharge.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dliberty.recharge.dto.ExportRechargeCardDto;
 import com.dliberty.recharge.dto.RechargeCardDto;
 import com.dliberty.recharge.entity.TbRechargeCard;
 import com.dliberty.recharge.vo.BatchCreateCardVo;
 import com.dliberty.recharge.vo.conditions.RechargeCardQueryVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -48,4 +51,17 @@ public interface ITbRechargeCardService extends IService<TbRechargeCard> {
      */
     RechargeCardDto getRechargeCardInfo(String keyword , Integer type);
 
+    /**
+     * 导出
+     *
+     * @return
+     */
+    List<ExportRechargeCardDto> export(RechargeCardQueryVo vo);
+
+    /**
+     * 统计
+     * @param vo
+     * @return
+     */
+    int exportCount(RechargeCardQueryVo vo);
 }
