@@ -1,20 +1,17 @@
 package com.dliberty.recharge.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-
-import java.io.Serializable;
 
 
 /**
  * @author changzzc
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-public class ExportRechargeCardDto implements Serializable {
+@EqualsAndHashCode()
+public class ExportRechargeCardDto{
 
     /**
      * 卡号
@@ -31,5 +28,6 @@ public class ExportRechargeCardDto implements Serializable {
     /**
      * 面额
      */
+    @ExcelIgnore
     private String money;
 }
