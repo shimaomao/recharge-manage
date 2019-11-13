@@ -1,6 +1,8 @@
 package com.dliberty.recharge.app.util;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.dliberty.recharge.common.lang.data.StringUtils;
+import com.dliberty.recharge.common.redis.RedisClient;
 import com.dliberty.recharge.dao.mapper.TbSysConfigMapper;
 import com.dliberty.recharge.entity.TbSysConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ public class ConfigUtil {
 
     @Autowired
     private TbSysConfigMapper configMapper;
+    @Autowired
+    private RedisClient redisClient;
 
     private static ConfigUtil configUtil;
 
@@ -26,6 +30,7 @@ public class ConfigUtil {
     public void init(){
         ConfigUtil.configUtil = this;
         ConfigUtil.configUtil.configMapper = this.configMapper;
+        ConfigUtil.configUtil.redisClient = this.redisClient;
     }
 
     /**
@@ -34,7 +39,11 @@ public class ConfigUtil {
      */
     public static String getString(String key){
         try{
-            TbSysConfig config = configUtil.configMapper.selectOne(new QueryWrapper<TbSysConfig>().eq("configKey", key));
+            String value = (String)configUtil.redisClient.get(key);
+            if(StringUtils.isNotEmpty(value)){
+                return value;
+            }
+            TbSysConfig config = configUtil.configMapper.selectOne(new QueryWrapper<TbSysConfig>().eq("config_key", key));
             if(config!=null){
                 return config.getConfigValue();
             }
@@ -50,13 +59,9 @@ public class ConfigUtil {
      * @return
      */
     public static String getString(String key , String defaultValue){
-        try{
-            TbSysConfig config = configUtil.configMapper.selectOne(new QueryWrapper<TbSysConfig>().eq("configKey", key));
-            if(config!=null){
-                return config.getConfigValue();
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+        String string = getString(key);
+        if(StringUtils.isNotEmpty(string)){
+            return string;
         }
         return defaultValue;
     }

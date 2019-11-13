@@ -1,10 +1,13 @@
 package com.dliberty.recharge.api.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dliberty.recharge.common.vo.Response;
 import com.dliberty.recharge.dto.RechargeCallBackDto;
+import com.dliberty.recharge.dto.RechargeOrderDto;
 import com.dliberty.recharge.entity.TbRechargeOrder;
 import com.dliberty.recharge.vo.RechargeVo;
+import com.dliberty.recharge.vo.conditions.RechargeOrderQueryVo;
 
 /**
  * <p>
@@ -30,4 +33,11 @@ public interface ITbRechargeOrderService extends IService<TbRechargeOrder> {
      * @return
      */
     String rechargeCallBack(RechargeCallBackDto callBackDto);
+
+    /**
+     * 查询列表
+     *
+     * @return
+     */
+    IPage<RechargeOrderDto> listPage(RechargeOrderQueryVo vo);
 }

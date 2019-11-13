@@ -1,29 +1,21 @@
-package com.dliberty.recharge.entity;
-
-import java.io.Serializable;
-import java.util.Date;
+package com.dliberty.recharge.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * <p>
- * 
- * </p>
- *
- * @author LG
- * @since 2019-11-07
+ * @author changzzc
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class TbRechargeOrder implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class RechargeOrderDto implements Serializable {
 
     /**
      * 主键
@@ -50,6 +42,11 @@ public class TbRechargeOrder implements Serializable {
      * 充值卡id
      */
     private Long rechargeCardId;
+
+    /**
+     * 充值卡号
+     */
+    private String rechargeCardNo;
 
     /**
      * 充值手机号
@@ -85,6 +82,4 @@ public class TbRechargeOrder implements Serializable {
      * 异步回调返回json
      */
     private String asyncCallbackJson;
-
-
 }

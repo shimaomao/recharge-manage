@@ -15,11 +15,40 @@
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
         <result column="is_deleted" property="isDeleted" />
+        <result column="async_callback_json" property="asyncCallbackJson" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_no, order_money, order_status, recharge_card_id, recharge_mobile, three_order_no, three_order_money, create_time, update_time, is_deleted
+        id, order_no, order_money, order_status, recharge_card_id, recharge_mobile, three_order_no, three_order_money, create_time, update_time, is_deleted,async_callback_json
     </sql>
+
+    <select id="listPage" resultType="com.dliberty.recharge.dto.RechargeOrderDto">
+        select
+        o.id, o.order_no, o.order_money, o.order_status, o.recharge_card_id, o.recharge_mobile, o.three_order_no,
+        o.three_order_money, o.create_time, o.update_time, o.is_deleted,o.async_callback_json,c.card_no as recharge_card_no
+        from tb_recharge_order o
+        left join tb_recharge_card c on c.id = o.recharge_card_id
+        where o.is_deleted = 0
+        <if test="vo.keyword != null and vo.keyword != ''">
+            and (o.order_no like CONCAT('%',#{vo.keyword},'%')
+                or o.recharge_mobile like CONCAT('%',#{vo.keyword},'%')
+                or o.three_order_no like CONCAT('%',#{vo.keyword},'%')
+                or c.card_no like CONCAT('%',#{vo.keyword},'%'))
+        </if>
+        <if test="vo.orderStatus != null">
+            and o.order_status = #{vo.orderStatus}
+        </if>
+
+        <if test="vo.startDate != null">
+            and o.create_time &gt;= #{vo.startDate}
+        </if>
+
+        <if test="vo.endDate != null">
+            and o.create_time &lt;= #{vo.endDate}
+        </if>
+        order by o.id desc
+    </select>
+
 
 </mapper>

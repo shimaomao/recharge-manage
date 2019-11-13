@@ -1,6 +1,8 @@
 package com.dliberty.recharge.app.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dliberty.recharge.api.service.IRechargeService;
 import com.dliberty.recharge.app.util.ConfigUtil;
 import com.dliberty.recharge.app.util.DistributedLockUtil;
@@ -11,8 +13,10 @@ import com.dliberty.recharge.app.util.GeneratorCardInfoUtil;
 import com.dliberty.recharge.common.vo.Response;
 import com.dliberty.recharge.dao.mapper.TbRechargeCardMapper;
 import com.dliberty.recharge.dto.RechargeCallBackDto;
+import com.dliberty.recharge.dto.RechargeOrderDto;
 import com.dliberty.recharge.entity.TbRechargeCard;
 import com.dliberty.recharge.vo.RechargeVo;
+import com.dliberty.recharge.vo.conditions.RechargeOrderQueryVo;
 import com.qianmi.open.api.ApiException;
 import com.qianmi.open.api.response.RechargeMobileCreateBillResponse;
 import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
@@ -136,11 +140,19 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
         if(order != null){
             order.setOrderStatus(1);
             order.setUpdateTime(new Date());
+            order.setAsyncCallbackJson(JSONObject.toJSONString(callBackDto));
             updateById(order);
         }else{
             //查不到
         }
         return "success";
+    }
+
+    @Override
+    public IPage<RechargeOrderDto> listPage(RechargeOrderQueryVo vo) {
+        vo.getPage().setOptimizeCountSql(false);
+        vo.getPage().setSearchCount(false);
+        return baseMapper.listPage(vo.getPage(), vo);
     }
 
 
