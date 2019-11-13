@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -55,7 +56,7 @@ public class UserLoginService {
 	public String login(String username, String password) {
 		String token = null;
 		// 密码需要客户端加密后传递
-		Users users = usersService.selectUserByOpenId(username);
+		Users users = usersService.selectUserByUsername(username);
 		if (null == users) {
 			throw new CommonException("用户名不存在");
 		}
@@ -67,6 +68,8 @@ public class UserLoginService {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
 			token = jwtTokenUtil.generateToken(userDetails, WebUtil.getIpAddr(null));
+		} catch(DisabledException e) {
+			throw new CommonException("用户被禁用");
 		} catch (AuthenticationException e) {
 			logger.warn("登录异常:{}", e.getMessage());
 		}

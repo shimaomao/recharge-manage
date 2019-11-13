@@ -10,10 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dliberty.recharge.api.service.UsersService;
+import com.dliberty.recharge.api.vo.UsersAddVo;
+import com.dliberty.recharge.api.vo.UsersUpdateStatusVo;
 import com.dliberty.recharge.dao.mapper.UsersMapper;
+import com.dliberty.recharge.dto.UsersDto;
 import com.dliberty.recharge.entity.Users;
+import com.dliberty.recharge.vo.conditions.UsersQueryVo;
 
 /**
  * <p>
@@ -30,9 +35,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public Users selectUserByOpenId(String userName) {
+	public Users selectUserByUsername(String username) {
 		QueryWrapper<Users> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("username", userName);
+		queryWrapper.eq("username", username);
 		queryWrapper.orderByDesc("id");
 		List<Users> selectList = baseMapper.selectList(queryWrapper);
 		if (selectList.size() > 0) {
@@ -42,14 +47,14 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 	}
 
 	@Override
-	public Users register(String userName,String password) {
+	public Users register(String username,String password) {
 		try {
-			Users users = selectUserByOpenId(userName);
+			Users users = selectUserByUsername(username);
 			if (users != null) {
 				return users;
 			}
 			users = new Users();
-			users.setUsername(userName);
+			users.setUsername(username);
 			users.setCreateTime(new Date());
 			users.setUpdateTime(new Date());
 			users.setStatus(1);
@@ -64,6 +69,28 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 		}
 		
 		
+	}
+
+	@Override
+	public IPage<UsersDto> listPage(UsersQueryVo vo) {
+		vo.getPage().setOptimizeCountSql(false);
+		vo.getPage().setSearchCount(false);
+		return baseMapper.listPage(vo.getPage(), vo);
+	}
+
+	@Override
+	public boolean updateStatus(UsersUpdateStatusVo vo) {
+		Users user = baseMapper.selectById(vo.getId());
+		if (user != null) {
+			user.setStatus(vo.getStatus());
+		}
+		return updateById(user);
+	}
+
+	@Override
+	public boolean addUser(UsersAddVo vo) {
+		register(vo.getUsername(), vo.getPassword());
+		return true;
 	}
 
 

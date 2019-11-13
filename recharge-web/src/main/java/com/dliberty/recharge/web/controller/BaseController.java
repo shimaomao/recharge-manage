@@ -15,7 +15,7 @@ public class BaseController {
 
 	public Long getUserId() {
 		String userName = getUserName();
-		Users users = usersService.selectUserByOpenId(userName);
+		Users users = usersService.selectUserByUsername(userName);
 		if (users != null) {
 			return users.getId();
 		}

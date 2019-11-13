@@ -152,7 +152,12 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
 		TbRechargeOrder order = baseMapper
 				.selectOne(new QueryWrapper<TbRechargeOrder>().eq("three_order_no", callBackDto.getBillId()));
 		if (order != null) {
-			order.setOrderStatus(1);
+			if ("1".equals(callBackDto.getRechargeState())) {
+				order.setOrderStatus(1);
+			} else {
+				order.setOrderStatus(3);
+			}
+			
 			order.setUpdateTime(new Date());
 			order.setAsyncCallbackJson(JSONObject.toJSONString(callBackDto));
 			updateById(order);
