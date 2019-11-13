@@ -22,4 +22,7 @@ public class RechargeCardQueryVo extends BaseVo {
 
     @ApiModelProperty(value = "结束时间")
     private Date endDate;
+
+    @ApiModelProperty(value = "面额")
+    private String money;
 }

@@ -41,6 +41,9 @@
         <if test="vo.useFlag != null">
             and is_use = #{vo.useFlag}
         </if>
+        <if test="vo.money != null">
+            and money = #{vo.money}
+        </if>
 
         <if test="vo.startDate != null">
             and create_time &gt;= #{vo.startDate}
