@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dliberty.recharge.app.util.ConfigUtil;
 import com.dliberty.recharge.common.redis.RedisClient;
 
 import io.swagger.annotations.Api;
@@ -23,6 +24,8 @@ public class HelloController {
 	public String home(){
 		boolean set = redisClient.set("123", "123");
 		System.out.println(set);
+		String string = ConfigUtil.getString("callback.url");
+		System.out.println(string);
 		return "hello home";
 	}
 }

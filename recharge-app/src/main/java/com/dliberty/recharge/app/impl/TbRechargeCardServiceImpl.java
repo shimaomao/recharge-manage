@@ -3,24 +3,22 @@ package com.dliberty.recharge.app.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Executor;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dliberty.recharge.common.utils.BeanUtil;
-import com.dliberty.recharge.common.utils.Md5;
-import org.apache.commons.codec.digest.Md5Crypt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dliberty.recharge.api.service.ITbRechargeCardService;
+import com.dliberty.recharge.app.util.GeneratorCardInfoUtil;
 import com.dliberty.recharge.common.constants.Constants;
 import com.dliberty.recharge.common.exception.CommonException;
+import com.dliberty.recharge.common.utils.BeanUtil;
 import com.dliberty.recharge.common.utils.EntityUtil;
-import com.dliberty.recharge.app.util.GeneratorCardInfoUtil;
+import com.dliberty.recharge.common.utils.Md5;
 import com.dliberty.recharge.dao.mapper.TbRechargeCardMapper;
 import com.dliberty.recharge.dto.RechargeCardDto;
 import com.dliberty.recharge.entity.TbRechargeCard;
@@ -40,7 +38,8 @@ import com.dliberty.recharge.vo.conditions.RechargeCardQueryVo;
 public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper, TbRechargeCard>
 		implements ITbRechargeCardService {
 
-	ExecutorService cachedThreadPool = Executors.newFixedThreadPool(4);
+	@Autowired
+	private Executor asyncServiceExecutor;
 
 	private static final int default_size = 1000;
 
@@ -54,7 +53,7 @@ public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper,
 				if(i == number){
 					size = cardVo.getNumber() - (number * default_size);
 				}
-				cachedThreadPool.execute(new CreatRechargeCardThread(size , cardVo , baseMapper));
+				asyncServiceExecutor.execute(new CreatRechargeCardThread(size , cardVo , baseMapper));
 			}
 
 		} catch (Exception e) {

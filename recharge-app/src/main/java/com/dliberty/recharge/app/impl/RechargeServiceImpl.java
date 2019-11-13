@@ -1,17 +1,21 @@
 package com.dliberty.recharge.app.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.dliberty.recharge.dao.mapper.TbApiRecordMapper;
-import com.dliberty.recharge.entity.TbApiRecord;
-import com.qianmi.open.api.QianmiRequest;
-import com.qianmi.open.api.QianmiResponse;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dliberty.recharge.api.service.IRechargeService;
+import com.dliberty.recharge.app.util.ConfigUtil;
+import com.dliberty.recharge.dao.mapper.TbApiRecordMapper;
+import com.dliberty.recharge.entity.TbApiRecord;
 import com.qianmi.open.api.ApiException;
 import com.qianmi.open.api.OpenClient;
+import com.qianmi.open.api.QianmiRequest;
+import com.qianmi.open.api.QianmiResponse;
 import com.qianmi.open.api.request.OrderCustomGetRequest;
 import com.qianmi.open.api.request.RechargeMobileCreateBillRequest;
 import com.qianmi.open.api.request.RechargeMobileGetItemInfoRequest;
@@ -23,18 +27,11 @@ import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
 import com.qianmi.open.api.response.RechargeMobileGetPhoneInfoResponse;
 import com.qianmi.open.api.response.RechargeOrderInfoResponse;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 public class RechargeServiceImpl implements IRechargeService {
 
 	@Autowired
 	private OpenClient openClient;
-
-	@Value("${RECHARGE.ACCESS.TOKEN}")
-	private String accessToken;
 
 	@Autowired
 	private TbApiRecordMapper tbApiRecordMapper;
@@ -96,6 +93,8 @@ public class RechargeServiceImpl implements IRechargeService {
 	 * @throws ApiException
 	 */
 	private <T extends QianmiResponse> T execute(QianmiRequest<T> request , Integer apiType) throws ApiException {
+		
+		String accessToken = ConfigUtil.getString("RECHARGE.ACCESS.TOKEN");
 		Map<String , Object> params = new HashMap<>(16);
 		params.put("param" , request);
 		params.put("accessToken" , accessToken);

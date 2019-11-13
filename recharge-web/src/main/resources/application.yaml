@@ -28,16 +28,15 @@ jwt:
   secret: mySecret
   expiration: 86400
   tokenHead: Bearer
-BASE_PATH: /export/static/file
 oss:
   endpoint: https://oss-cn-hangzhou.aliyuncs.com
-  accessKeyId: LTAIySeB65IvOWKo
-  accessKeySecret: GKQuDSKcJEYdSbkgADq9BVX3AyABff
+  accessKeyId: 111
+  accessKeySecret: 111
   bucketName: mtbox
   policy:
     expire: 300 # 签名有效期(S)
   maxSize: 10 # 上传文件大小(M)
-  callback: http://39.98.190.128:8080/aliyun/oss/callback # 文件上传成功后的回调地址
+  callback: http://111/aliyun/oss/callback # 文件上传成功后的回调地址
   dir:
     prefix: recharge/images/ # 上传文件夹路径前缀
 app:
@@ -50,7 +49,3 @@ RECHARGE:
    APP:
       KEY: 10001319
       SECRET: gUjpChpSnyrEr4RdURxtyx695kLE70Ar
-   ACCESS:
-      TOKEN: 333bdfb8339640a4b40259078a2ac442
-   CALLBACK:
-      URL: http://www.baidu.com
