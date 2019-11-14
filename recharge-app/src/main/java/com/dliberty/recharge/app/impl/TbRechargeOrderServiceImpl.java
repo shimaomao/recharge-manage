@@ -66,7 +66,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
 				if (StringUtils.isNotEmpty(rechargeVo.getSecretKey())
 						&& StringUtils.isNotEmpty(rechargeVo.getMobile())) {
 					rechargeCard = tbRechargeCardMapper
-							.selectOne(new QueryWrapper<TbRechargeCard>().eq("secret_key", rechargeVo.getSecretKey()));
+							.selectOne(new QueryWrapper<TbRechargeCard>().eq("secret_key", rechargeVo.getSecretKey()).eq("is_deleted", 0));
 					if (rechargeCard == null) {
 						errorMessage = "密钥输入有误";
 					} else if (rechargeCard.getIsUse() != 0) {

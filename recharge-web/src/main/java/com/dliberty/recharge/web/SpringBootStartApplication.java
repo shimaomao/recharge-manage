@@ -1,5 +1,9 @@
 package com.dliberty.recharge.web;
 
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,6 +28,11 @@ public class SpringBootStartApplication extends SpringBootServletInitializer {
 		builder.sources(this.getClass());
 		return super.configure(builder);
 
+	}
+
+	@PostConstruct
+	void started() {
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
 	}
 
 }

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dliberty.recharge.app.util.ConfigUtil;
 import com.dliberty.recharge.common.redis.RedisClient;
 
 import io.swagger.annotations.Api;
@@ -22,10 +21,10 @@ public class HelloController {
 	@GetMapping("home")
 	@ApiOperation(value = "home")
 	public String home(){
-		boolean set = redisClient.set("123", "123");
+		boolean set = redisClient.setNx("1234", "123",60*60);
 		System.out.println(set);
-		String string = ConfigUtil.getString("callback.url");
-		System.out.println(string);
+		boolean set2 = redisClient.setNx("1234", "123",60*60);
+		System.out.println(set2);
 		return "hello home";
 	}
 }
