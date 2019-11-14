@@ -128,13 +128,15 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
 				updateById(order);
 
 				// 修改卡位已使用
-				EntityUtil.setUpdateValue(rechargeCard);
-				rechargeCard.setIsUse(1);
-				rechargeCard.setUseMobile(rechargeVo.getMobile());
-				rechargeCard.setUseTime(new Date());
-				tbRechargeCardMapper.updateById(rechargeCard);
-
-				return Response.ofData(resultFlag);
+				if (resultFlag) {
+					EntityUtil.setUpdateValue(rechargeCard);
+					rechargeCard.setIsUse(1);
+					rechargeCard.setUseMobile(rechargeVo.getMobile());
+					rechargeCard.setUseTime(new Date());
+					tbRechargeCardMapper.updateById(rechargeCard);
+				}
+				
+				return Response.ofData(resultFlag,resultFlag?"":"充值失败");
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -145,7 +147,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
 			return Response.ofData(false, "充值卡已使用");
 		}
 
-		return Response.ofData(false);
+		return Response.ofData(false,"充值失败");
 	}
 
 	@Override
