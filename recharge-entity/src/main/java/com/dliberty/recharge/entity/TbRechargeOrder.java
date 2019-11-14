@@ -86,5 +86,7 @@ public class TbRechargeOrder implements Serializable {
      */
     private String asyncCallbackJson;
 
+    private String failOrderNo;
+
 
 }

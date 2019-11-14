@@ -82,4 +82,9 @@ public class RechargeOrderDto implements Serializable {
      * 异步回调返回json
      */
     private String asyncCallbackJson;
+
+    /**
+     * 失败重试上一次订单号
+     */
+    private String failOrderNo;
 }

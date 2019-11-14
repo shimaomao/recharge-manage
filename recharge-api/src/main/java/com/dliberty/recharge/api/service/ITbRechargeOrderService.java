@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.dliberty.recharge.common.vo.Response;
 import com.dliberty.recharge.dto.RechargeCallBackDto;
 import com.dliberty.recharge.dto.RechargeOrderDto;
+import com.dliberty.recharge.entity.TbRechargeCard;
 import com.dliberty.recharge.entity.TbRechargeOrder;
 import com.dliberty.recharge.vo.RechargeVo;
 import com.dliberty.recharge.vo.conditions.RechargeOrderQueryVo;
@@ -40,4 +41,13 @@ public interface ITbRechargeOrderService extends IService<TbRechargeOrder> {
      * @return
      */
     IPage<RechargeOrderDto> listPage(RechargeOrderQueryVo vo);
+
+    /**
+     * 提交订单
+     * @param tbRechargeCard
+     * @param mobile
+     * @param failOrderNo
+     * @return
+     */
+    Response<Boolean> submitOrder(TbRechargeCard tbRechargeCard , String mobile , String failOrderNo);
 }

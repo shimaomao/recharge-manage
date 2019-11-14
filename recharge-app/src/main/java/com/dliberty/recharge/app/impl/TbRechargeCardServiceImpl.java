@@ -125,7 +125,12 @@ public class TbRechargeCardServiceImpl extends ServiceImpl<TbRechargeCardMapper,
 		return baseMapper.exportCount(vo);
 	}
 
-	class CreatRechargeCardThread implements Runnable{
+    @Override
+    public List<String> selectMoney(RechargeCardQueryVo vo) {
+        return baseMapper.selectMoney(vo);
+    }
+
+    class CreatRechargeCardThread implements Runnable{
 		private int size ;
 		private BatchCreateCardVo cardVo;
 

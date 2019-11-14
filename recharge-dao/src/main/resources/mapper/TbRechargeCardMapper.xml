@@ -86,4 +86,9 @@
         <include refid="export_sql" />
     </select>
 
+    <select id="selectMoney" resultType="java.lang.String" parameterType="com.dliberty.recharge.vo.conditions.RechargeOrderQueryVo">
+        select distinct money from tb_recharge_card where is_deleted = 0
+        <include refid="export_sql" />
+    </select>
+
 </mapper>

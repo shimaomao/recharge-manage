@@ -24,10 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -75,9 +72,14 @@ public class ExportController {
             if (count % default_size != 0L) {
                 ++pages;
             }
+            List<String> moneyList = tbRechargeCardService.selectMoney(vo);
+            Map<String , Integer> sheetIndex = new HashMap<>(16);
+            for (int i = 0; i < moneyList.size(); i++) {
+                sheetIndex.put(moneyList.get(i) , i);
+            }
 
             for (int index = 1; index <= pages; index++ ){
-                fixedThreadPool.execute(new QueryRunable(writer , index , default_size, BeanUtil.toBean(vo , RechargeCardQueryVo.class), singleThreadPool));
+                fixedThreadPool.execute(new QueryRunable(writer , index , default_size, BeanUtil.toBean(vo , RechargeCardQueryVo.class), singleThreadPool , sheetIndex));
             }
             fixedThreadPool.shutdown();
             fixedThreadPool.awaitTermination(1 , TimeUnit.HOURS);
@@ -99,11 +101,13 @@ public class ExportController {
 
         private ExcelWriter writer;
         private List<ExportRechargeCardDto> list;
+        private Map<String , Integer> sheetIndex;
 
 
-        public ExportRunable(ExcelWriter writer, List<ExportRechargeCardDto> list) {
+        public ExportRunable(ExcelWriter writer, List<ExportRechargeCardDto> list,Map<String , Integer> sheetIndex) {
             this.writer = writer;
             this.list = list;
+            this.sheetIndex = sheetIndex;
         }
 
         @Override
@@ -111,6 +115,7 @@ public class ExportController {
             Map<String, List<ExportRechargeCardDto>> detailsMap = list.stream() .collect(Collectors.groupingBy(ExportRechargeCardDto::getMoney));
             for(String key : detailsMap.keySet()){
                 WriteSheet writeSheet = new WriteSheet();
+                writeSheet.setSheetNo(sheetIndex.getOrDefault(key , 0));
                 writeSheet.setSheetName(key);
                 writer.write(detailsMap.get(key) , writeSheet);
             }
@@ -123,13 +128,15 @@ public class ExportController {
         private Integer pageSize;
         private RechargeCardQueryVo rechargeCardQueryVo;
         private ExecutorService singleThreadPool;
+        private Map<String , Integer> sheetIndex;
 
-        public QueryRunable(ExcelWriter writer, Integer pageNo, Integer pageSize , RechargeCardQueryVo rechargeCardQueryVo , ExecutorService singleThreadPool) {
+        public QueryRunable(ExcelWriter writer, Integer pageNo, Integer pageSize , RechargeCardQueryVo rechargeCardQueryVo , ExecutorService singleThreadPool,Map<String , Integer> sheetIndex) {
             this.writer = writer;
             this.pageNo = pageNo;
             this.pageSize = pageSize;
             this.rechargeCardQueryVo = rechargeCardQueryVo;
             this.singleThreadPool = singleThreadPool;
+            this.sheetIndex = sheetIndex;
         }
 
         @Override
@@ -140,7 +147,7 @@ public class ExportController {
             List<ExportRechargeCardDto> exportList = tbRechargeCardService.export(rechargeCardQueryVo);
             Long end = System.currentTimeMillis();
             logger.info("{}消耗：{}" ,pageNo, end - start);
-            singleThreadPool.execute(new ExportRunable(writer , exportList));
+            singleThreadPool.execute(new ExportRunable(writer , exportList , sheetIndex));
         }
     }
 }
