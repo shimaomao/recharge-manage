@@ -150,8 +150,7 @@ public class RedisClient {
 	 */
 	public boolean setNx(String key, Object value) {
 		try {
-			redisTemplate.opsForValue().setIfAbsent(key, value);
-			return true;
+			return redisTemplate.opsForValue().setIfAbsent(key, value);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -172,11 +171,10 @@ public class RedisClient {
 	public boolean setNx(String key, Object value, long time) {
 		try {
 			if (time > 0) {
-				redisTemplate.opsForValue().setIfAbsent(key, value, time, TimeUnit.SECONDS);
+				return redisTemplate.opsForValue().setIfAbsent(key, value, time, TimeUnit.SECONDS);
 			} else {
-				setNx(key, value);
+				return setNx(key, value);
 			}
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
