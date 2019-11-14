@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -29,7 +30,7 @@ import com.dliberty.recharge.entity.TbRechargeCard;
 import com.dliberty.recharge.entity.TbRechargeOrder;
 import com.dliberty.recharge.vo.RechargeVo;
 import com.dliberty.recharge.vo.conditions.RechargeOrderQueryVo;
-import com.qianmi.open.api.response.RechargeMobileCreateBillResponse;
+import com.qianmi.open.api.response.BmRechargeMobilePayBillResponse;
 import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
 
 /**
@@ -41,6 +42,7 @@ import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
  * @since 2019-11-07
  */
 @Service
+@Transactional
 public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMapper, TbRechargeOrder>
 		implements ITbRechargeOrderService {
 	
@@ -109,7 +111,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
 
 				// 调用第三方接口
 				String callBackUrl = ConfigUtil.getString("callback.url");
-				RechargeMobileCreateBillResponse cbResponse = rechargeService.payBill(rechargeVo.getMobile(),
+				BmRechargeMobilePayBillResponse cbResponse = rechargeService.payBill(rechargeVo.getMobile(),
 						rechargeCard.getMoney(), order.getOrderNo(), callBackUrl,
 						itemInfo.getMobileItemInfo().getItemId());
 				// 根据状态修改订单状态

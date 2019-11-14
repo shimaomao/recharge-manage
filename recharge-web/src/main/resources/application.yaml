@@ -5,13 +5,13 @@ server:
 debug: false
 spring:
   datasource:
-    url: jdbc:mysql://129.211.90.90:3306/recharge?useUnicode=true&characterEncoding=utf8&useSSL=true&verifyServerCertificate=false
+    url: jdbc:mysql://127.0.0.1:3306/recharge?useUnicode=true&characterEncoding=utf8&useSSL=true&verifyServerCertificate=false
     username: root
     password: Root1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
   redis:
     database: 0
-    host: 129.211.90.90
+    host: 127.0.0.1
     port: 6379
     password: redis
     pool:
@@ -47,5 +47,5 @@ RECHARGE:
    API:
       URL: http://apilf.bm001.com/api
    APP:
-      KEY: 10001319
-      SECRET: gUjpChpSnyrEr4RdURxtyx695kLE70Ar
+      KEY: 10002200
+      SECRET: GhGIFgaFDGyLWK0I20QPgx13ZAl6pVz5

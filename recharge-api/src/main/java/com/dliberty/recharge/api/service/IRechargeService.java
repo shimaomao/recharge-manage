@@ -1,6 +1,7 @@
 package com.dliberty.recharge.api.service;
 
 import com.qianmi.open.api.ApiException;
+import com.qianmi.open.api.response.BmRechargeMobilePayBillResponse;
 import com.qianmi.open.api.response.OrderCustomGetResponse;
 import com.qianmi.open.api.response.RechargeMobileCreateBillResponse;
 import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
@@ -39,7 +40,7 @@ public interface IRechargeService {
 	 * @param itemId 话费充值商品编号，使用getItemInfo接口查询，如果传递则使用传递的商品编号进行充值，否则系统自动内部匹配商品
 	 * @return
 	 */
-	RechargeMobileCreateBillResponse payBill(String mobile,String rechargeAmount,String outerTid,String callback,String itemId) throws ApiException;
+	BmRechargeMobilePayBillResponse payBill(String mobile,String rechargeAmount,String outerTid,String callback,String itemId) throws ApiException;
 	
 	/**
 	 * 根据第三方订单号查询订单详情（充值系统订单号）

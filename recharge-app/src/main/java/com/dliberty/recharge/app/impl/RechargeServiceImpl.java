@@ -16,13 +16,13 @@ import com.qianmi.open.api.ApiException;
 import com.qianmi.open.api.OpenClient;
 import com.qianmi.open.api.QianmiRequest;
 import com.qianmi.open.api.QianmiResponse;
+import com.qianmi.open.api.request.BmRechargeMobilePayBillRequest;
 import com.qianmi.open.api.request.OrderCustomGetRequest;
-import com.qianmi.open.api.request.RechargeMobileCreateBillRequest;
 import com.qianmi.open.api.request.RechargeMobileGetItemInfoRequest;
 import com.qianmi.open.api.request.RechargeMobileGetPhoneInfoRequest;
 import com.qianmi.open.api.request.RechargeOrderInfoRequest;
+import com.qianmi.open.api.response.BmRechargeMobilePayBillResponse;
 import com.qianmi.open.api.response.OrderCustomGetResponse;
-import com.qianmi.open.api.response.RechargeMobileCreateBillResponse;
 import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
 import com.qianmi.open.api.response.RechargeMobileGetPhoneInfoResponse;
 import com.qianmi.open.api.response.RechargeOrderInfoResponse;
@@ -56,9 +56,9 @@ public class RechargeServiceImpl implements IRechargeService {
 	}
 
 	@Override
-	public RechargeMobileCreateBillResponse payBill(String mobile, String rechargeAmount, String outerTid,
+	public BmRechargeMobilePayBillResponse payBill(String mobile, String rechargeAmount, String outerTid,
 			String callback, String itemId) throws ApiException {
-		RechargeMobileCreateBillRequest request = new RechargeMobileCreateBillRequest();
+		BmRechargeMobilePayBillRequest request = new BmRechargeMobilePayBillRequest();
 		request.setItemId(itemId);
 		request.setMobileNo(mobile);
 		request.setRechargeAmount(rechargeAmount);
