@@ -30,8 +30,8 @@ import com.dliberty.recharge.entity.TbRechargeCard;
 import com.dliberty.recharge.entity.TbRechargeOrder;
 import com.dliberty.recharge.vo.RechargeVo;
 import com.dliberty.recharge.vo.conditions.RechargeOrderQueryVo;
+import com.qianmi.open.api.response.BmRechargeMobileGetItemInfoResponse;
 import com.qianmi.open.api.response.BmRechargeMobilePayBillResponse;
-import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
 
 /**
  * <p>
@@ -88,7 +88,7 @@ public class TbRechargeOrderServiceImpl extends ServiceImpl<TbRechargeOrderMappe
 
 				String reverseFlag = "1";
 				// 查询所需要的信息
-				RechargeMobileGetItemInfoResponse itemInfo = rechargeService.getItemInfo(rechargeVo.getMobile(),
+				BmRechargeMobileGetItemInfoResponse itemInfo = rechargeService.getItemInfo(rechargeVo.getMobile(),
 						rechargeCard.getMoney());
 				if (StringUtils.isNotEmpty(itemInfo.getErrorCode()) || itemInfo.getMobileItemInfo() == null
 						|| reverseFlag.equals(itemInfo.getMobileItemInfo().getReverseFlag())) {

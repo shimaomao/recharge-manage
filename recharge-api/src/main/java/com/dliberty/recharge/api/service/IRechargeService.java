@@ -1,12 +1,11 @@
 package com.dliberty.recharge.api.service;
 
 import com.qianmi.open.api.ApiException;
+import com.qianmi.open.api.response.BmOrderCustomGetResponse;
+import com.qianmi.open.api.response.BmRechargeMobileGetItemInfoResponse;
+import com.qianmi.open.api.response.BmRechargeMobileGetPhoneInfoResponse;
 import com.qianmi.open.api.response.BmRechargeMobilePayBillResponse;
-import com.qianmi.open.api.response.OrderCustomGetResponse;
-import com.qianmi.open.api.response.RechargeMobileCreateBillResponse;
-import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
-import com.qianmi.open.api.response.RechargeMobileGetPhoneInfoResponse;
-import com.qianmi.open.api.response.RechargeOrderInfoResponse;
+import com.qianmi.open.api.response.BmRechargeOrderInfoResponse;
 
 /**
  * 充值服务类
@@ -21,7 +20,7 @@ public interface IRechargeService {
 	 * @param rechargeAmount 充值金额
 	 * @return
 	 */
-	RechargeMobileGetItemInfoResponse getItemInfo(String mobile,String rechargeAmount) throws ApiException;
+	BmRechargeMobileGetItemInfoResponse getItemInfo(String mobile,String rechargeAmount) throws ApiException;
 	
 	/**
 	 * 查询手机账号详情
@@ -29,7 +28,7 @@ public interface IRechargeService {
 	 * @param respType 可选值： area:仅返回归属地信息(查询速度快) detail:仅返回账户余额(貌似不能用)，all:同时查询归属地和账户余额，默认则仅返回归属地信息
 	 * @return
 	 */
-	RechargeMobileGetPhoneInfoResponse getPhoneInfo(String mobile,String respType) throws ApiException;
+	BmRechargeMobileGetPhoneInfoResponse getPhoneInfo(String mobile,String respType) throws ApiException;
 	
 	/**
 	 * 话费订单充值 
@@ -47,12 +46,12 @@ public interface IRechargeService {
 	 * @param billId
 	 * @return
 	 */
-	RechargeOrderInfoResponse getOrderInfo(String billId) throws ApiException;
+	BmRechargeOrderInfoResponse getOrderInfo(String billId) throws ApiException;
 	
 	/**
 	 * 根据商户订单号查询订单详情
 	 * @param outerTid
 	 * @return
 	 */
-	OrderCustomGetResponse getOrderInfoByOuterTid(String outerTid) throws ApiException;
+	BmOrderCustomGetResponse getOrderInfoByOuterTid(String outerTid) throws ApiException;
 }

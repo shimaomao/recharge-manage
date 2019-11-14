@@ -16,16 +16,16 @@ import com.qianmi.open.api.ApiException;
 import com.qianmi.open.api.OpenClient;
 import com.qianmi.open.api.QianmiRequest;
 import com.qianmi.open.api.QianmiResponse;
+import com.qianmi.open.api.request.BmOrderCustomGetRequest;
+import com.qianmi.open.api.request.BmRechargeMobileGetItemInfoRequest;
+import com.qianmi.open.api.request.BmRechargeMobileGetPhoneInfoRequest;
 import com.qianmi.open.api.request.BmRechargeMobilePayBillRequest;
-import com.qianmi.open.api.request.OrderCustomGetRequest;
-import com.qianmi.open.api.request.RechargeMobileGetItemInfoRequest;
-import com.qianmi.open.api.request.RechargeMobileGetPhoneInfoRequest;
-import com.qianmi.open.api.request.RechargeOrderInfoRequest;
+import com.qianmi.open.api.request.BmRechargeOrderInfoRequest;
+import com.qianmi.open.api.response.BmOrderCustomGetResponse;
+import com.qianmi.open.api.response.BmRechargeMobileGetItemInfoResponse;
+import com.qianmi.open.api.response.BmRechargeMobileGetPhoneInfoResponse;
 import com.qianmi.open.api.response.BmRechargeMobilePayBillResponse;
-import com.qianmi.open.api.response.OrderCustomGetResponse;
-import com.qianmi.open.api.response.RechargeMobileGetItemInfoResponse;
-import com.qianmi.open.api.response.RechargeMobileGetPhoneInfoResponse;
-import com.qianmi.open.api.response.RechargeOrderInfoResponse;
+import com.qianmi.open.api.response.BmRechargeOrderInfoResponse;
 
 @Service
 public class RechargeServiceImpl implements IRechargeService {
@@ -37,9 +37,9 @@ public class RechargeServiceImpl implements IRechargeService {
 	private TbApiRecordMapper tbApiRecordMapper;
 
 	@Override
-	public RechargeMobileGetItemInfoResponse getItemInfo(String mobile, String rechargeAmount)
+	public BmRechargeMobileGetItemInfoResponse getItemInfo(String mobile, String rechargeAmount)
 			throws ApiException {
-		RechargeMobileGetItemInfoRequest req = new RechargeMobileGetItemInfoRequest();
+		BmRechargeMobileGetItemInfoRequest req = new BmRechargeMobileGetItemInfoRequest();
 		req.setMobileNo(mobile);
 		req.setRechargeAmount(rechargeAmount);
 		//RechargeMobileGetItemInfoResponse response = openClient.execute(req, accessToken);
@@ -47,8 +47,8 @@ public class RechargeServiceImpl implements IRechargeService {
 	}
 
 	@Override
-	public RechargeMobileGetPhoneInfoResponse getPhoneInfo(String mobile, String respType) throws ApiException {
-		RechargeMobileGetPhoneInfoRequest req = new RechargeMobileGetPhoneInfoRequest();
+	public BmRechargeMobileGetPhoneInfoResponse getPhoneInfo(String mobile, String respType) throws ApiException {
+		BmRechargeMobileGetPhoneInfoRequest req = new BmRechargeMobileGetPhoneInfoRequest();
 		req.setPhoneNo(mobile);
 		req.setRespType(respType);
 		//RechargeMobileGetPhoneInfoResponse response = openClient.execute(req, accessToken);
@@ -69,16 +69,16 @@ public class RechargeServiceImpl implements IRechargeService {
 	}
 
 	@Override
-	public RechargeOrderInfoResponse getOrderInfo(String billId) throws ApiException{
-		RechargeOrderInfoRequest req = new RechargeOrderInfoRequest();
+	public BmRechargeOrderInfoResponse getOrderInfo(String billId) throws ApiException{
+		BmRechargeOrderInfoRequest req = new BmRechargeOrderInfoRequest();
 		req.setBillId(billId);
 		//return openClient.execute(req, accessToken);
 		return execute(req , 3);
 	}
 
 	@Override
-	public OrderCustomGetResponse getOrderInfoByOuterTid(String outerTid) throws ApiException {
-		OrderCustomGetRequest req = new OrderCustomGetRequest();
+	public BmOrderCustomGetResponse getOrderInfoByOuterTid(String outerTid) throws ApiException {
+		BmOrderCustomGetRequest req = new BmOrderCustomGetRequest();
 		req.setOuterTid(outerTid);
 		//return openClient.execute(req , accessToken);
 		return execute(req , 4);
