@@ -48,12 +48,4 @@ public interface TbRechargeCardMapper extends BaseMapper<TbRechargeCard> {
      * @return
      */
     int exportCount(RechargeCardQueryVo vo);
-
-    /**
-     * 查询面额
-     * @param vo
-     * @return
-     */
-    List<String> selectMoney(RechargeCardQueryVo vo);
-
 }
