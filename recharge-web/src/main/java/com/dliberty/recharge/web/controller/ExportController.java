@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 @Api(value = "充值卡导出接口", tags = "ExportController")
 public class ExportController {
 
-    private static final Integer default_size = 100000;
+    private static final Integer default_size = Integer.MAX_VALUE;
 
     private static Logger logger = LoggerFactory.getLogger(ExportController.class);
 
